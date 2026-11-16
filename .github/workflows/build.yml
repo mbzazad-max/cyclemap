@@ -1,0 +1,71 @@
+name: Build and deploy Cycle Map
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why this run (the Refresh button fills this in)'
+        required: false
+        default: 'manual'
+      force:
+        description: 'Rebuild even if no new candles arrived'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '20 1 * * *'   # once a day as a safety net (12:20 Sydney summer time), after the 11:30 and 11:40 loads; data commits trigger it too
+  push:
+    branches: [main]
+    paths: ['.github/workflows/build.yml', 'public/index.html', 'public/shim.js', 'public/cloud.js', 'worker/**', 'build/**', 'config/**', 'tools/**', 'wrangler.jsonc', 'reference/**']
+permissions:
+  contents: write
+concurrency:
+  group: cyclemap
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: The page must be the original artifact, unchanged
+        run: |
+          (cd reference && sha256sum -c PAGE_SHA256SUMS)
+          node tools/check_page.js
+      - name: Check secrets
+        env:
+          MD: ${{ secrets.MARKET_DATA_TOKEN }}
+        run: '[ -n "$MD" ] || { echo "::error::Secret MARKET_DATA_TOKEN is not set, so the shared data cannot be read. Nothing changed."; exit 1; }'
+      - uses: actions/checkout@v4
+        with:
+          repository: mbzazad-max/market-data
+          token: ${{ secrets.MARKET_DATA_TOKEN }}
+          path: md
+          fetch-depth: 1
+      - name: Build the snapshot from closed candles (keeps last good data on any failure)
+        run: node build/build.js md ${{ inputs.force && '--force' || '' }}
+      - name: Save the new snapshot (one commit)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/snapshot.json public/freshness.json
+          if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi
+          git commit -q -m "Dashboard build $(node -p "require('./public/freshness.json').generated")"
+          for i in 1 2 3 4 5; do git push -q origin HEAD:main && exit 0; git pull -q --rebase origin main; sleep $((i*2)); done
+          echo "::error::Could not save the snapshot."; exit 1
+      - name: Deploy to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          REFRESH_TOKEN: ${{ secrets.MARKET_DATA_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then echo "::warning::Cloudflare secrets not set; built but not deployed."; exit 0; fi
+          # a pasted secret can carry a stray space or line break; a real token and account id never contain whitespace
+          export CLOUDFLARE_API_TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')" CLOUDFLARE_ACCOUNT_ID="$(printf '%s' "$CLOUDFLARE_ACCOUNT_ID" | tr -d '[:space:]')"
+          echo "Token: ${#CLOUDFLARE_API_TOKEN} characters; account id: ${#CLOUDFLARE_ACCOUNT_ID} characters (expected 32)."
+          [ ${#CLOUDFLARE_ACCOUNT_ID} -eq 32 ] || { echo "::error::CLOUDFLARE_ACCOUNT_ID must be the 32-character Account ID from the Cloudflare dashboard (it has ${#CLOUDFLARE_ACCOUNT_ID}). The built data is saved; the site keeps its last deploy."; exit 1; }
+          npx -y wrangler@4 deploy || { echo "::error::Cloudflare refused the deploy. Check the CLOUDFLARE_API_TOKEN secret (only the token value, Workers Scripts: Edit on your account) and CLOUDFLARE_ACCOUNT_ID (32 characters). The built data is saved; the site keeps its last deploy."; exit 1; }   # workers_dev is off: only the home site (dashboards) can reach this Worker
+          printf '%s' "$REFRESH_TOKEN" | tr -d '[:space:]' | npx -y wrangler@4 secret put GITHUB_TOKEN

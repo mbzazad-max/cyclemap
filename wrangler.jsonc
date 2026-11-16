@@ -1,0 +1,12 @@
+{
+  // BTC & ETH Cycle Map on Cloudflare Workers. Static files come from public/ (built on GitHub).
+  // No public address of its own: it is reached only through the home site (repo dashboards), which holds the login lock.
+  // Deployed by .github/workflows/build.yml (needs secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID).
+  "name": "cyclemap",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+  "vars": { "GITHUB_REPO": "mbzazad-max/cyclemap" },
+  "workers_dev": false,
+  "preview_urls": false
+}

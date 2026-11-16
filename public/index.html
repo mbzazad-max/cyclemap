@@ -1,0 +1,994 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>BTC &amp; ETH 2026–2029 Cycle Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single analyst's ledger column — thesis strip, the cycle chart, then evidence tables in reading order */
+:root{
+  --bg:#F2F3F1; --panel:#FFFFFF; --ink:#16191C; --muted:#5F6670; --line:#D9DCD8;
+  --btc:#C86B12; --btc-soft:#F6E6D4;
+  --bear:#4F6D8F; --base:#C86B12; --bull:#2E8B57; --stall:#8A8F96; --hist:#16191C;
+  --good:#2E8B57; --warn:#B7791F; --bad:#B23B3B;
+  --q4:rgba(200,107,18,.07); --r22:#C86B12; --r18:#3E6A9E; --r15:#2E8B57; --inst:#8A4FB0;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111315; --panel:#1A1D20; --ink:#E9EAE7; --muted:#9AA1A9; --line:#2D3135;
+  --btc:#F0932F; --btc-soft:#3A2814;
+  --bear:#7FA2C9; --base:#F0932F; --bull:#58C08A; --stall:#8E949B; --hist:#E9EAE7;
+  --good:#58C08A; --warn:#E0A84A; --bad:#E06A6A; --q4:rgba(240,147,47,.08); --r22:#F0932F; --r18:#7FA8D8; --r15:#58C08A; --inst:#C08BE6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111315; --panel:#1A1D20; --ink:#E9EAE7; --muted:#9AA1A9; --line:#2D3135;
+  --btc:#F0932F; --btc-soft:#3A2814;
+  --bear:#7FA2C9; --base:#F0932F; --bull:#58C08A; --stall:#8E949B; --hist:#E9EAE7;
+  --good:#58C08A; --warn:#E0A84A; --bad:#E06A6A; --q4:rgba(240,147,47,.08); --r22:#F0932F; --r18:#7FA8D8; --r15:#58C08A; --inst:#C08BE6; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(28px,4.6vw,44px);line-height:1.05;font-weight:700}
+h2{font-size:22px;font-weight:700}
+h3{font-size:15px;font-weight:600;font-family:var(--f-body)}
+p{margin:0;max-width:68ch}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+header{display:flex;flex-direction:column;gap:10px}
+.lede{font-size:16px;color:var(--muted)}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stat{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat .v{font-family:var(--f-mono);font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}
+.stat .k{font-size:12px;color:var(--muted)}
+.stat .s{font-size:12px;color:var(--muted)}
+section{display:flex;flex-direction:column;gap:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.controls{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end}
+.ctl{display:flex;flex-direction:column;gap:6px}
+.ctl label,.ctl .lbl{font-size:12px;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg button{font:500 13px var(--f-body);background:transparent;color:var(--ink);border:0;padding:7px 12px;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--btc-soft);color:var(--btc)}
+.seg button:focus-visible,input:focus-visible,.chip:focus-visible{outline:2px solid var(--btc);outline-offset:2px}
+input[type=number]{font:500 14px var(--f-mono);width:120px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 13px var(--f-body);border:1px solid var(--line);background:transparent;color:var(--ink);padding:5px 10px;border-radius:999px;cursor:pointer}
+.chip i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.chip[aria-pressed="false"]{opacity:.45}
+.chartbox{overflow-x:auto}
+svg text{font-family:var(--f-mono);font-size:11px;fill:var(--muted)}
+.tablebox{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+th{font:500 11.5px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+th:first-child,td:first-child{text-align:left}
+td.num{font-family:var(--f-mono)}
+tr.proj td{background:var(--btc-soft)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.clocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.clock{border-top:3px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:2px}
+.clock.on{border-top-color:var(--btc)}
+.clock .d{font-family:var(--f-display);font-size:22px;font-weight:700}
+.pill{display:inline-block;font:500 11.5px var(--f-mono);padding:2px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.good{color:var(--good)} .pill.warn{color:var(--warn)} .pill.bad{color:var(--bad)}
+.tf{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tfc{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tfc .row{display:flex;justify-content:space-between;gap:8px;font-size:13px}
+.tfc .row span:last-child{font-family:var(--f-mono)}
+.checks{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.checks li{display:grid;grid-template-columns:88px 1fr;gap:12px;align-items:baseline;font-size:14px}
+.yeargrid td.cell{font-family:var(--f-mono)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:1px}
+.sub{font-size:11.5px;font-family:var(--f-body)}
+.meter{display:inline-block;width:46px;height:5px;border-radius:3px;background:var(--line);vertical-align:2px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--btc)}
+.up{color:var(--good)} .dn{color:var(--bad)}
+.chartbox{position:relative}
+#chart{touch-action:pan-y;cursor:crosshair}
+.readout{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:13.5px;min-height:44px}
+.readout .when{font-family:var(--f-display);font-weight:700;font-size:16px;margin-right:4px}
+.readout .it{display:inline-flex;gap:6px;align-items:baseline;white-space:nowrap}
+.readout .it b{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums}
+.readout .it small{color:var(--muted);font-family:var(--f-mono);font-size:11.5px}
+.weekcheck{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-left:3px solid var(--btc);border-radius:10px;padding:12px 14px;background:var(--panel);font-size:14px}
+.weekcheck .h{font-family:var(--f-display);font-weight:700;font-size:16px}
+.weekcheck b{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums}
+.guide{font-size:13.5px}
+.guide summary{cursor:pointer;font-weight:600;color:var(--btc)}
+.guide ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:80ch}
+#segAsset button{font:700 14px var(--f-body);padding:8px 18px;letter-spacing:.02em}
+.refresh{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+#refreshBtn{font:600 14px var(--f-body);background:var(--btc);color:var(--panel);border:0;border-radius:8px;padding:9px 16px;cursor:pointer}
+#refreshBtn:disabled{opacity:.6;cursor:progress}
+#refreshBtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.rstatus{font-size:13px;color:var(--muted);max-width:70ch}
+.rstatus.good{color:var(--good)} .rstatus.bad{color:var(--bad)}
+.notes{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.notes p{max-width:90ch}
+@media (max-width:520px){ .checks li{grid-template-columns:1fr;gap:2px} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow" id="asof">Cycle 5 · BTCUSDT</div>
+  <h1 id="h1">Where this Bitcoin bull could go, and when it ends</h1>
+  <div class="refresh"><div class="seg" id="segAsset" role="group" aria-label="Asset"><button type="button" data-k="btc" aria-pressed="true">BTC</button><button type="button" data-k="eth" aria-pressed="false">ETH</button></div><button type="button" id="refreshBtn">Refresh from TradingView</button><span id="refreshStatus" class="rstatus">Manual refresh: pulls the latest BTCUSDT weekly, monthly, daily and 4H candles (4 requests) and recalculates the whole page.</span></div>
+  <p class="lede" id="lede"></p>
+</header>
+
+<div class="strip" id="strip"></div>
+
+<section>
+  <h2>Price outlook</h2>
+  <p class="muted" id="outlookNote"></p>
+  <div class="weekcheck" id="weekCheck"></div>
+  <div class="panel" style="gap:10px">
+    <div class="seg" id="segOutlook"><button type="button" data-k="q" aria-pressed="true">By quarter</button><button type="button" data-k="m" aria-pressed="false">By month</button></div>
+    <div class="tablebox"><table id="outlook"></table></div>
+  </div>
+  <div class="notes"><p><b>Expected</b> is the price if it keeps following the selected cycle. <b>Low</b> and <b>High</b> are the lowest and highest of the past-cycle replays for that period. Everything below this table explains where these numbers come from; you only need it if you want to change the assumptions.</p></div>
+</section>
+
+<section>
+  <h2>How closely is 2026 tracking each cycle?</h2>
+  <p class="muted">Gain off each cycle's bear low, week by week. <span id="trackNote">The thick line is this cycle since its low.</span></p>
+  <div class="panel"><div class="chartbox"><svg id="track" role="img" aria-label="Gain since the cycle low for this cycle and past cycles, by week"></svg></div></div>
+  <div class="tablebox panel" style="padding:6px 8px"><table id="matchTable"></table></div>
+  <div class="notes"><p>Overall match is half price path, half weekly SMA behaviour. Price path averages four scores: how the bear unfolded over time (shape), how deep it went, how long it lasted, and how closely weekly gains since the low line up. Weekly SMA compares how price treated the 20W, 50W and 200W averages; the breakdown is in the next section.</p></div>
+</section>
+
+<section>
+  <h2>Weekly SMA fingerprint</h2>
+  <p class="muted">How price treated the 20-, 50-, 100- and 200-week simple moving averages through each bear and recovery. Weeks are counted from the cycle top or the bear low.</p>
+  <div class="panel">
+    <div class="ctl"><span class="lbl">Price relative to</span>
+      <div class="seg" id="segSma"><button type="button" data-k="50" aria-pressed="true">50W SMA</button><button type="button" data-k="200" aria-pressed="false">200W SMA</button><button type="button" data-k="20" aria-pressed="false">20W SMA</button></div>
+    </div>
+    <div class="chartbox"><svg id="smaChart" role="img" aria-label="Price divided by the weekly SMA around each cycle low"></svg></div>
+    <p class="muted" style="font-size:13px" id="smaNote"></p>
+  </div>
+  <div class="tablebox panel" style="padding:6px 8px"><table id="smaTable"></table></div>
+  <div class="grid2">
+    <div class="panel"><h3>Where price sits now</h3><div id="smaNow" class="notes" style="color:var(--ink)"></div></div>
+    <div class="panel"><h3>Next SMA signals to watch</h3><div id="smaNext" class="notes" style="color:var(--ink)"></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Replay projections</h2>
+
+  <div class="panel">
+    <div class="ctl"><span class="lbl">Follow this cycle (drives the stats, targets, roadmap and calendar)</span>
+      <div class="seg" id="segFollow"></div>
+    </div>
+    <div class="controls">
+      <div class="ctl"><span class="lbl">Cycle bottom</span>
+        <div class="seg" id="segBottom">
+          <button type="button" id="bIn" aria-pressed="true">Already in · Jul 2026</button>
+          <button type="button" id="bRetest" aria-pressed="false">Retest · Dec 2026</button>
+        </div>
+      </div>
+      <div class="ctl" id="retestCtl" hidden><label for="retestPx">Retest low (USD)</label><input type="number" id="retestPx" value="62000" step="1000" min="30000" max="80000"></div>
+      <div class="ctl"><span class="lbl">Peak timing</span>
+        <div class="seg" id="segPeak">
+          <button type="button" data-k="early" aria-pressed="false">Own clock · pure replay</button>
+          <button type="button" data-k="halv" aria-pressed="true">Halving clock · Oct 2029</button>
+          <button type="button" data-k="late" aria-pressed="false">Late Q4 · Dec 2029</button>
+        </div>
+      </div>
+      <div class="ctl"><span class="lbl">Sizing</span>
+        <div class="seg" id="segSize">
+          <button type="button" data-k="scaled" aria-pressed="true">Scaled · diminishing returns</button>
+          <button type="button" data-k="raw" aria-pressed="false">Same % as original</button>
+        </div>
+      </div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="chartbox"><svg id="chart" role="img" aria-label="Bitcoin monthly price on a log scale from 2017 with projected replay paths to 2031"></svg></div>
+    <div class="readout" id="readout" aria-live="polite"></div>
+    <p class="muted" style="font-size:13px" id="chartNote"></p>
+    <details class="guide">
+      <summary>How to use this chart</summary>
+      <ol>
+        <li><b>Follow this cycle:</b> pick the past cycle you think the coin is repeating, or leave it on Auto to follow the closest match. Its line goes thick, and the stats, targets, roadmap and calendar switch to it.</li>
+        <li><b>Read a price:</b> hover over the chart, or tap and drag on a phone. The box under the chart shows the month and each line's price, plus the change from today.</li>
+        <li><b>Cycle bottom:</b> "Already in" assumes the current cycle low holds. "Retest" drops price to a new low in December first; type the low you expect.</li>
+        <li><b>Peak timing:</b> "Own clock" copies the old cycle's timing exactly. "Halving clock" lines each cycle's halving up with the April 2028 Bitcoin halving, which puts the top around Sep–Oct 2029. "Late Q4" pushes the top to Dec 2029.</li>
+        <li><b>Sizing:</b> "Scaled" shrinks every replay to this cycle's likely size (shown in the chart note). "Same % as original" repeats the old percentage gains, which gets unrealistic for older cycles.</li>
+        <li><b>Chips:</b> tap a coloured chip to hide or show that line. The % on each chip is how closely 2026 has tracked that cycle so far.</li>
+      </ol>
+    </details>
+  </div>
+</section>
+
+<section>
+  <h2>Replay targets</h2>
+  <div class="tablebox panel" style="padding:6px 8px"><table id="scenTable"></table></div>
+  <div class="notes" id="scenNotes"></div>
+</section>
+
+<section>
+  <h2>When does the top land?</h2>
+  <p class="muted">Three independent clocks from past cycles. Where they agree is the peak window.</p>
+  <div class="panel"><div class="clocks" id="clocks"></div></div>
+</section>
+
+<section>
+  <h2>Quarter-by-quarter roadmap</h2>
+  <p class="muted" id="roadmapNote"></p>
+  <div class="tablebox panel" style="padding:6px 8px"><table id="roadmap"></table></div>
+</section>
+
+<section>
+  <h2>Past cycles, side by side</h2>
+  <div class="tablebox panel" style="padding:6px 8px"><table id="cycles"></table></div>
+  <div class="notes"><p id="cyclesNote"></p></div>
+</section>
+
+<section>
+  <h2>The four-year calendar</h2>
+  <p class="muted">Calendar-year returns lined up by position in the cycle. 2027 sits in the "recovery year" slot, 2028 is the halving year and 2029 the top year.</p>
+  <div class="tablebox panel" style="padding:6px 8px"><table id="years" class="yeargrid"></table></div>
+  <div class="tablebox panel" style="padding:6px 8px"><table id="quarters"></table></div>
+  <div class="notes"><p>Q4 itself is not reliably green. It is the timing of cycle peaks that clusters in Q4, not Q4 returns in every year.</p></div>
+</section>
+
+<section>
+  <h2>Right now: 1W · 1D · 4H</h2>
+  <div class="tf" id="tf"></div>
+</section>
+
+<section>
+  <h2>What confirms or breaks the bull case</h2>
+  <div class="panel"><ul class="checks" id="checks"></ul></div>
+</section>
+
+<section>
+  <h2>How the model works</h2>
+  <div class="notes">
+    <p id="howTiming"></p>
+    <p><b>Replays.</b> Each historical replay copies that cycle's weekly route from bear low to top, then its following bear. "Own clock" keeps the original spacing between low, halving and top. The halving clock stretches it so the halving lands on April 2028.</p>
+    <p><b>Sizing.</b> Each cycle's gain, measured in log terms, has shrunk at a steady rate. Scaled replays reach the midpoint of two decay models: new highs shrinking at the top-to-top rate, and runs off the bottom shrinking at their rate. "Same % as original" repeats each cycle's raw multiple instead.</p>
+    <p><b>Institutional cycle.</b> A hypothetical path, not a replay: if ETFs and treasuries smooth the cycle, the top comes about a year later than the halving clock, the climb is steadier, and the following bear is about −30% instead of −50% or worse.</p>
+    
+    <p id="howLimits"></p>
+    <p id="howData"></p>
+  </div>
+</section>
+</div>
+
+<script src="shim.js"></script>
+<script>
+// ---------- Data (Binance BTCUSDT, pulled 28 Oct 2026) ----------
+let M_RAW="2017-08-01,4261,4745,3400,4725;2017-09-01,4690,4939,2817,4379;2017-10-01,4378,6498,4110,6463;2017-11-01,6463,11300,5325,9839;2017-12-01,9837,19799,9380,13716;2018-01-01,13716,17176,9035,10285;2018-02-01,10285,11786,6000,10327;2018-03-01,10326,11710,6600,6924;2018-04-01,6922,9760,6430,9246;2018-05-01,9246,10020,7033,7485;2018-06-01,7485,7787,5750,6390;2018-07-01,6391,8492,6070,7731;2018-08-01,7736,7750,5880,7011;2018-09-01,7011,7410,6111,6627;2018-10-01,6627,7680,6205,6372;2018-11-01,6370,6615,3653,4041;2018-12-01,4041,4313,3156,3703;2019-01-01,3701,4070,3350,3434;2019-02-01,3434,4198,3373,3814;2019-03-01,3814,4140,3671,4104;2019-04-01,4102,5600,4067,5321;2019-05-01,5322,9074,5316,8555;2019-06-01,8555,13970,7445,10854;2019-07-01,10854,13147,9060,10081;2019-08-01,10081,12331,9320,9587;2019-09-01,9589,10906,7710,8289;2019-10-01,8290,10370,7300,9141;2019-11-01,9141,9514,6515,7542;2019-12-01,7541,7750,6435,7195;2020-01-01,7195,9578,6871,9353;2020-02-01,9352,10500,8445,8524;2020-03-01,8524,9188,3782,6410;2020-04-01,6412,9460,6150,8620;2020-05-01,8620,10067,8117,9448;2020-06-01,9448,10380,8833,9139;2020-07-01,9138,11444,8893,11335;2020-08-01,11335,12468,10519,11650;2020-09-01,11650,12051,9825,10777;2020-10-01,10777,14100,10374,13791;2020-11-01,13791,19863,13195,19696;2020-12-01,19696,29300,17572,28924;2021-01-01,28924,41950,28130,33093;2021-02-01,33093,58353,32296,45136;2021-03-01,45134,61844,44951,58741;2021-04-01,58739,64854,46930,57694;2021-05-01,57697,59500,30000,37254;2021-06-01,37254,41330,28805,35045;2021-07-01,35045,42448,29278,41462;2021-08-01,41462,50500,37333,47101;2021-09-01,47101,52920,39600,43824;2021-10-01,43820,67000,43283,61300;2021-11-01,61300,69000,53257,56951;2021-12-01,56951,59054,42000,46217;2022-01-01,46217,47990,32917,38467;2022-02-01,38467,45821,34322,43160;2022-03-01,43160,48190,37155,45510;2022-04-01,45510,47444,37578,37631;2022-05-01,37631,40024,26700,31801;2022-06-01,31801,31983,17622,19942;2022-07-01,19942,24668,18781,23293;2022-08-01,23296,25211,19520,20050;2022-09-01,20048,22799,18126,19423;2022-10-01,19423,21085,18190,20491;2022-11-01,20491,21481,15476,17164;2022-12-01,17166,18388,16256,16542;2023-01-01,16542,23961,16499,23125;2023-02-01,23125,25250,21351,23142;2023-03-01,23142,29185,19549,28465;2023-04-01,28465,31000,26943,29233;2023-05-01,29233,29820,25811,27210;2023-06-01,27210,31432,24800,30472;2023-07-01,30472,31804,28862,29232;2023-08-01,29232,30244,25166,25941;2023-09-01,25941,27484,24901,26963;2023-10-01,26963,35280,26539,34640;2023-11-01,34640,38450,34097,37724;2023-12-01,37724,44700,37616,42284;2024-01-01,42284,48969,38555,42580;2024-02-01,42580,64000,41884,61131;2024-03-01,61131,73777,59005,71280;2024-04-01,71280,72798,59192,60672;2024-05-01,60672,71979,56553,67540;2024-06-01,67540,71997,58402,62772;2024-07-01,62772,70080,53486,64628;2024-08-01,64628,65660,49000,58974;2024-09-01,58974,66498,52550,63328;2024-10-01,63328,73620,58946,70292;2024-11-01,70292,99588,66835,96408;2024-12-01,96408,108353,90500,93576;2025-01-01,93576,109588,89257,102430;2025-02-01,102430,102784,78259,84350;2025-03-01,84350,95000,76606,82550;2025-04-01,82550,95758,74508,94172;2025-05-01,94172,111980,93377,104592;2025-06-01,104592,110530,98200,107147;2025-07-01,107147,123218,105100,115764;2025-08-01,115764,124474,107350,108246;2025-09-01,108246,117900,107255,114049;2025-10-01,114049,126200,102000,109608;2025-11-01,109608,111250,80600,90360;2025-12-01,90360,94589,83823,87648;2026-01-01,87648,97924,75720,78741;2026-02-01,78741,79424,60000,66973;2026-03-01,66973,76000,65000,68284;2026-04-01,68284,79486,65712,76347;2026-05-01,76347,82850,72512,73674;2026-06-01,73674,74092,58115,58625;2026-07-01,58625,66956,57800,62888;2026-08-01,62888,81479,62275,78581;2026-09-01,78581,87396,74968,83624;2026-10-01,83624,87220,79221,81529";
+let W_C=[115268,115232,112164,123482,114959,108643,114559,110541,104723,94261,86830,90360,90395,88172,88659,87953,91530,91014,93673,86670,76968,70330,68833,67643,65776,65971,72815,67859,66011,69034,70741,73802,78658,78569,82210,77458,77065,73674,63332,65746,63312,59577,63650,63780,64723,65400,63570,64902,62900,77734,77682,80342,76842,81178,84472,86530,83773,82116,80154,81529];
+let D_C="89995,90628,91530,93860,93748,91364,91100,90641,90505,91014,91296,95414,96952,95605,95551,95148,93673,92631,88428,89455,89560,89600,89225,86670,88347,89250,89300,84650,84260,78741,76968,78739,75770,73166,62910,70580,69289,70330,70138,68841,67083,66272,68854,69823,68833,68892,67504,66461,67004,68020,67976,67643,64656,64058,67988,67485,65872,66973,65776,68830,68338,72667,70891,68114,67263,65971,68432,69949,70192,70541,70930,71212,72815,74885,73909,71247,69930,70511,68918,67859,70906,70557,71337,68820,66407,66377,66011,66797,68284,68114,66902,66964,67300,69034,68854,71924,71070,71788,72963,73043,70741,74418,74132,74810,75154,77072,75692,73802,75841,76336,78178,78257,77437,77625,78658,77371,76343,75780,76347,78231,78687,78569,79861,80906,81447,80006,80193,80678,82210,81746,80504,79314,81090,79113,78148,77458,77002,76834,77552,77616,75540,76752,77065,77322,75930,74449,73618,73461,73884,73674,71409,66761,64143,63886,61056,60885,63332,63086,61730,61511,63626,63580,64458,65746,66329,65675,64509,62958,63544,64298,63312,64020,62735,61078,59794,60097,60029,59577,60260,58625,60024,61560,62583,63144,63650,64042,63364,62290,63230,64162,63819,63780,62335,65044,64756,63830,63932,64834,64723,65256,66556,66114,65099,64140,64375,65400,63756,63915,63984,64780,62888,62824,63570,63520,64107,64665,64324,64923,64963,64902,63970,63600,63480,63491,63044,63086,62900,64532,64725,69335,73025,78338,77075,77734,78993,78539,79024,80250,77846,78230,77682,78581,77439,77340,81270,79661,79832,80342,79112,78456,78306,76569,77226,77279,76842,78189,75644,76206,76417,80884,81250,81178,86620,86209,84398,84410,84100,84433,84472,83500,83664,83624,84880,84518,84754,86530,85767,85550,83322,81754,82636,82988,83773,81850,83169,81682,82246,81616,81491,82116,81938,83028,84093,81416,81189,80888,80154,80151,80910,81538".split(',').map(Number);
+let H4_C="78904,78446,78456,78638,79277,79325,78597,78235,78306,78328,78112,77841,77250,77161,76569,76892,77231,77036,77732,77286,77226,77268,77270,77356,77380,77115,77279,77192,77128,76792,77135,77284,76842,77596,77892,77776,78578,78982,78189,77677,76930,76940,76512,76186,75644,75824,75767,76250,75788,76080,76206,76442,76463,76482,76780,76594,76417,77383,77798,78062,80726,81205,80884,81136,81100,81303,81636,81354,81250,80486,80312,80493,80912,81177,81178,81425,81720,84887,85928,86490,86620,85693,85344,85987,86413,86192,86209,86704,86125,85650,83996,84518,84398,83934,84524,83495,84418,84413,84410,84231,84044,84583,83796,84020,84100,83939,84117,84176,84156,84017,84433,84402,84791,84898,84463,84736,84472,83339,82966,83083,83370,83390,83500,83070,83981,84358,83068,83594,83664,83301,83305,83915,84134,83603,83624,83754,83430,83906,84163,84675,84880,85513,86090,86425,85326,84315,84518,84700,84560,84672,84867,84843,84754,84841,85106,85309,85256,85428,86530,86085,86253,86216,85270,85724,85767,85516,85555,86242,85721,85614,85550,84150,84145,83740,83454,83435,83322,82757,82999,82506,81038,81776,81754,82428,82664,83247,82884,82337,82636,82597,82807,82880,83049,83085,82988,82820,83025,83164,83909,83669,83773,83613,83992,83397,82731,82862,81850,83331,83871,83360,83435,83299,83169,83700,83582,83466,81641,81841,81682,80928,81541,80980,82418,82385,82246,82126,82290,82641,81353,81590,81616,81574,81739,81576,81355,81600,81491,81960,81681,82070,81178,80880,82116,82531,82717,82357,81942,81881,81938,82138,81567,81504,82618,82606,83028,82734,83154,83500,84540,84490,84093,82925,82239,81750,81682,81494,81416,81889,81580,81726,81692,81282,81189,80978,80732,80599,79804,80489,80888,80863,80673,80581,80636,80567,80154,79598,80047,80416,80428,80020,80151,79820,79807,79910,80562,80818,80910,81145,81082,81538".split(',').map(Number);
+
+let NOW = new Date('2026-10-28T10:40:00Z');
+let PRICE = 81529;
+let ATH = {d:'2025-10-06', p:126200};
+let LOW = {d:'2026-07-01', p:57800};
+let LEVELS = { hi:{p:87396,m:'Sep 2026'}, lo30:{p:79221,m:'Oct 2026'}, lo90:{p:74968,m:'Sep 2026'} };
+let DATA_AT = new Date('2026-10-28T10:40:00Z'), DATA_SRC = 'Binance snapshot';
+let WK_BN="4086,4310,4509,4130,3700,3660,4378,4640,5710,5950,6170,7345,5811,8038,9128,11165,14900,18860,13500,13716,16150,13475,11530,11880,8185,8064,10383,9590,11515,9534,8190,8470,6813,7018,8355,8787,9419,9659,8680,8527,7339,7714,6765,6450,6137,6357,6712,6353,7395,8211,7024,6308,6478,6700,7302,6251,6505,6708,6627,6615,6339,6590,6490,6486,6450,5662,4086,4161,3545,3229,3930,3802,3988,3477,3539,3551,3458,3680,3668,3744,3808,3917,3981,3992,4104,5170,5131,5256,5308,5776,6967,8148,8614,8726,7628,8953,10906,10854,11406,10174,10589,9542,10929,11550,10307,10143,9725,10381,10302,10029,8044,7854,8275,8223,9530,9195,9039,8502,6903,7391,7510,7119,7501,7388,7359,8185,8702,8615,9332,10152,9917,9936,8532,8033,5361,5816,5881,6773,6904,7121,7693,8894,8723,9680,8720,9448,9747,9342,9295,9116,9069,9303,9209,9932,11071,11682,11911,11648,11711,10256,10333,10920,10774,10667,11369,11503,13029,13762,15475,15957,18414,18185,19359,19175,23456,26282,33000,38150,35829,32260,33093,38796,48578,57409,45136,50972,58968,57352,55778,58202,60002,56150,49067,56578,58241,46432,34655,35641,35796,39021,35600,34700,35287,34259,31779,35381,39845,43794,46974,49239,48768,51757,46025,47242,43161,48200,54659,61528,60852,61300,63274,65519,58622,57275,49396,50054,46681,50775,47286,41865,43072,36245,37882,42381,42054,38387,37699,38421,37777,41262,46828,46407,42159,39678,39450,38468,34038,31329,30294,29468,29919,26575,20574,21038,19316,20862,20798,22580,23293,23174,24305,21516,19556,20000,21827,19416,18807,19057,19439,19263,19570,20627,20906,16330,16280,16429,17106,17085,16738,16832,16617,17128,20872,22708,23742,22933,21784,24272,23555,22430,21997,27973,27968,28172,28324,30305,27591,29233,28430,26918,26748,28065,27115,25926,26340,30463,30617,30161,30232,30084,29281,29088,29304,26190,26102,25971,25842,26528,26248,27993,27917,27154,29992,34526,35012,37064,37360,37447,39972,43790,41375,42992,42284,43929,41732,41580,42031,42583,48300,52138,51729,63114,68956,68393,67210,71280,69360,65662,64941,63119,64012,61484,66274,68508,67766,69648,66677,63210,62772,55858,60798,68165,68250,58161,58713,58427,64220,57302,54870,59132,63579,65602,62820,62870,69032,68022,68776,80370,89856,97900,97185,101110,104464,95186,93738,98364,94545,101332,102620,97701,96463,96118,96258,94270,80734,82575,86083,82390,78430,83760,85179,93749,94278,104118,106454,109004,105643,105734,105594,100964,108357,109204,119087,117265,119416,114209,119294,117405,113494,108246,111137,115268,115232,112164,123482,114959,108643,114559,110541,104723,94261,86830,90360,90395,88172,88659,87953,91530,91014,93673,86670,76968,70330,68833,67643,65776,65971,72815,67859,66011,69034,70741,73802,78658,78569,82210,77458,77065,73674,63332,65746,63312,59577,63650,63780,64723,65400,63570,64902,62900,77734,77682,80342,76842,81178,84472,86530,83773,82116,80154,81542";
+
+// ---------- ETH data: Binance ETHUSDT (pulled 7 Nov 2026) + Kraken ETHUSD weekly before Aug 2017 ----------
+const ETH_PRE="1.19999,1.5893,1.35,1.32,1.34,0.88557,0.94116,0.70077,0.60954,0.59934,0.505,0.62,0.99,1,0.91926,0.97,0.87,0.82499,0.91993,1.065,0.91799,0.96,1,1.32,2.1,2.2004,2.89791,5.2,4.63,6.49862,11.18745,14.39791,10.3428,10.4348,11.61449,8.95092,9.3205,7.95,8.79,9.535,9.93,14.2,12.07017,13.95997,15.66,12.23579,13.97,11.74531,11.06043,11.24449,12.78798,11.87998,10.9762,11.13868,11.17001,11.02,11.60411,11.75498,12.49792,13.05,13.15611,12.06597,11.97899,12.02002,11.26309,10.951,10.12356,9.5,8.99205,7.36101,8.22757,7.8803,7.1544,8.1995,10.27581,9.79079,10.78807,10.43361,11.25399,11.3649,12.80999,14.44,19.03258,23.30013,42.36041,49.99999,48.4995,43.93521,48.55612,48.50386,78.367,87.4,88.33819,145.25,168.28644,245.351,333.09999,349.5,276.8101,283.89,236.39999,155.19999,229.85,198.4549,265.67,298.00001";
+const ETH_MC=[384.79,304.36,304.9,427.43,733.98,1124.81,853.5,393.92,670.78,577.81,454.09,432.22,281.41,232.94,198.73,113.73,131.45,106.44,135.34,141.38,161.83,267.9,292.7,218.42,171.57,180.85,182.18,151.37,129.16,179.99,217.21,132.72,206.08,231.57,225.6,346.33,433.79,359.83,386.46,616.66,736.42,1312.55,1419.18,1919.37,2772.42,2706.15,2275.68,2531.05,3429.2,3000.61,4287.21,4630.26,3676.23,2686.94,2920.95,3281.51,2726.66,1941.9,1071.01,1678.12,1554.1,1328.72,1572.69,1294.46,1196.13,1585.33,1605.23,1821.52,1870.09,1873.63,1933.79,1856.14,1645.76,1670.89,1814.67,2051.96,2281.87,2283.14,3340.09,3645.29,3014.05,3762.29,3438.16,3232.74,2513.01,2602.23,2518.61,3703.6,3337.78,3300.99,2237.59,1822.43,1793.61,2528.06,2485.47,3698.39,4391.83,4145.15,3847.99,2991.26,2971.64,2451.95,1964.51,2105.43,2257.51,2007.01,1572.01,1862.6,2467.65,2686.01,2255.66,2243.99];
+const ETH_WK="299.1,348.13,341.77,293.5,257.55,282,303.95,311.07,337.96,293.79,305,295.53,305.24,354.15,462.84,460.3,427.35,707.64,658,733.98,1123.09,1347,1049,1251.96,823.56,808.99,911,841.19,866.66,720.85,537,523.74,378.58,400.4,533.88,620.92,690.85,794.3,729.08,716.16,570.4,619.66,524.11,497.14,454.41,452.1,486.77,449.78,457.47,466.4,408.79,317.89,299.42,274.29,295.41,195.81,220.17,244.5,232.94,226.14,197.01,207.49,204.99,212.11,212.54,178.97,118.67,116.57,93.26,84.67,129.03,137.77,153.86,114.16,117.47,112.05,107.36,125.12,133.75,132.1,130.6,135.37,138.67,136.09,141.38,174.21,167.23,168.59,157.85,163.05,188.11,259.51,264.45,268.88,230.98,267.73,308.52,292.7,304.72,225.85,225.38,211.62,221.79,216.42,194.33,186.54,170.74,181.19,189.03,211.2,169.24,170.1,180.99,175.22,183.75,181.54,188.96,183.82,139.96,150.73,150.44,142.46,132.09,134.36,135.37,146.54,166.79,167.86,188.44,228.49,258.85,274.48,217.81,199.43,123.78,122.32,124.5,142.68,158.59,180.03,197.38,209.86,187.54,207,199.9,231.57,244.56,231.77,228.04,224.93,227.56,242.79,239.11,311,372.42,390.14,433.62,390.71,428.94,352.8,366.42,371.04,357.49,352.37,374.16,378.11,405.86,396.67,454.3,448.08,560.03,576.3,601.54,590.7,638.18,685.11,978.28,1254.25,1232.45,1392.51,1312.55,1611.62,1800.42,1933.53,1419.18,1726.16,1848.1,1782.98,1687.01,2075.69,2151.36,2235.64,2320.49,2949.56,3923.95,3582.1,2096.39,2385.98,2711.92,2509.33,2243.47,1982.28,2322.69,2140.45,1891.64,2189.79,2555.69,3011.85,3307.09,3238,3223.47,3950.29,3404.21,3328.62,3059.37,3417.73,3414.22,3846.85,4082.33,4287.21,4612.59,4626.5,4258.31,4294.78,4196.44,4130,3924.14,4063.56,3828.27,3151.97,3346.88,2539.01,2601.68,3054.99,2871.13,2621.99,2616.79,2551.29,2515.65,2861.38,3295.65,3521.91,3203.04,2988.06,2921,2824.81,2519.71,2145.29,2043.19,1813.64,1806.23,1434.84,1128.53,1197.79,1074.26,1168.36,1338.65,1597.7,1678.12,1700.19,1935.31,1618.13,1426.76,1579.28,1766.11,1334.51,1294.63,1276.72,1323.13,1305.95,1364.2,1590.44,1568.29,1221.49,1142.21,1193.88,1279.41,1263.01,1183.06,1218.51,1200.34,1290.16,1552.52,1627.44,1644.72,1629.02,1514.83,1679.75,1641.36,1564.58,1580.33,1780.68,1773.88,1794.51,1858.92,2118.67,1862,1870.09,1870.4,1799.21,1804.91,1908.64,1890.01,1752.76,1720.95,1898.8,1937.48,1862.8,1922.11,1888.73,1861.79,1830.28,1840.73,1685.24,1658.33,1635.84,1617.42,1622.48,1580.71,1733.79,1632.84,1557.77,1663.7,1795.14,1891.71,2044.68,2011.47,2062.33,2192.95,2352.39,2196.52,2264.05,2281.87,2221.42,2472.87,2457.05,2256.9,2289.79,2507.21,2881.2,3112.59,3487.81,3878.47,3644.71,3454.98,3645.29,3454.2,3155.11,3147.67,3263.45,3136.41,2929.29,3071.19,3826.47,3780.91,3706.4,3624.41,3420.91,3438.16,2931,3245.08,3535.92,3270.16,2688.92,2555.38,2612.15,2746.13,2425.72,2297.3,2316.1,2581,2657.62,2440.03,2468.91,2746.91,2507.8,2457.73,3183.21,3076,3361.2,3707.61,4004.15,3959.09,3281.83,3356.48,3635.99,3267.3,3215.12,3232.61,2869.68,2627.18,2661.41,2819.69,2518.11,2020.41,1887,2005.99,1807.74,1580.76,1597.76,1587.36,1791.29,1808.86,2514.57,2497.78,2551.22,2539.21,2509.83,2547.61,2227.7,2500.09,2570.35,2972.03,3756.69,3872.1,3496.74,4250.57,4472.33,4780.15,4391.83,4306.19,4604.49,4444.97,4142.16,4514.32,4152.29,3982.58,4158.46,3906.58,3583.46,3095.29,2802.16,2991.26,3059.85,3063.5,3002.02,2950.91,3144.7,3123.45,3284.03,2816.89,2270.15,2089.74,1966.58,1957.82,1939.71,1937.1,2178.3,2053.89,1984.64,2110.17,2191.65,2263.27,2369.44,2322.65,2371.27,2131,2099.85,2007.01,1690.51,1725.62,1706.94,1571.96,1785.65,1806.8,1872.23,1954.72,1885.36,1910.65,1876,2463.41,2416.88,2514.48,2477.1,2645.21,2688.65,2726.94,2536.94,2410.31,2329.87,2275.31,2243.99";
+const ETH_D=[3095.75,3325.82,3354.92,3318.69,3296.28,3310.56,3284.03,3189.55,2939.88,2982.27,2952.69,2956.41,2953.22,2816.89,2930.35,3026.77,3010.78,2822.59,2707.38,2451.95,2270.15,2347.02,2233.72,2148.26,1826.83,2063.38,2087.08,2089.74,2105.02,2022.67,1941.18,1947.85,2048.72,2086.59,1966.58,1998.33,1991.66,1955.91,1949.08,1968.88,1973.35,1957.82,1856.3,1851.94,2057.48,2027.68,1929.84,1964.51,1939.71,2027.35,1982.8,2127.28,2072.86,1978.68,1969.59,1937.1,1992.98,2036.51,2051.97,2073.52,2092.22,2096.16,2178.3,2352.97,2317.39,2203.39,2137.81,2146.22,2084.87,2053.89,2152.03,2156.23,2169.02,2060.43,1992.75,1994.74,1984.64,2026.48,2105.43,2140.35,2057.17,2053.83,2065.52,2110.17,2107.16,2240.01,2190,2190.2,2245.05,2284.99,2191.65,2369.46,2322.44,2359.95,2348.17,2419,2350.32,2263.27,2313.85,2327.14,2374.07,2330.26,2314.99,2319.5,2369.44,2303.67,2289.42,2252.9,2257.51,2295.63,2316.97,2322.65,2347.16,2360.77,2350.84,2291.06,2307.06,2326.44,2371.27,2339.87,2274.96,2258.65,2283.25,2224.66,2180.77,2131,2130.08,2111.93,2129.44,2133.76,2065.85,2117.68,2099.85,2113.01,2073.77,2024.84,2009.9,2014.54,2022.44,2007.01,2006.73,1859.84,1813.05,1770.77,1583.4,1569.69,1690.51,1690.49,1639.52,1621.59,1673.46,1666.41,1681.18,1725.62,1796.13,1792.99,1750.6,1711.11,1711.19,1741.08,1706.94,1728.19,1667.13,1622.17,1567.84,1578.68,1573.99,1571.96,1613.07,1572.01,1609.58,1700.57,1758.21,1780.64,1785.65,1799.56,1771.45,1743.54,1745.16,1796.85,1787.76,1806.8,1776.72,1891.87,1917.86,1864.71,1841.93,1862.61,1872.23,1904.77,1930.09,1934.25,1878.38,1861.44,1874.89,1954.72,1892.53,1922.23,1910.72,1918.31,1862.6,1844.94,1885.36,1860.5,1869.75,1908.9,1904.1,1914.18,1916.74,1910.65,1873.16,1882.59,1879.81,1886.15,1882.2,1882.64,1876,1913.6,1917.85,2252.8,2326.82,2516.3,2422.6,2463.41,2482.31,2442.64,2506.78,2510.94,2442.8,2457.67,2416.88,2467.65,2418.57,2391.92,2507.51,2455.85,2480.34,2514.48,2490.16,2485.06,2468.13,2438.27,2516.43,2525.93,2477.1,2515.75,2398.26,2418.26,2447.28,2612.14,2632.69,2645.21,2776.19,2753.63,2684.71,2688.05,2691.61,2696.33,2688.65,2688.71,2677.98,2686.01,2706.42,2668.59,2687.23,2726.94,2709.98,2697.49,2574.14,2474.8,2487.7,2506.52,2536.94,2447.17,2497.95,2421.6,2442.08,2423.54,2402.82,2410.31,2408.01,2449.2,2473.76,2389.14,2387.6,2358.82,2329.87,2324.55,2350.36,2359.68,2253.13,2245.54,2255.66,2275.31,2253.29,2274.77,2424.61,2238.01,2238.67,2244];
+const ETH_H4=[2508.12,2584.06,2636.71,2612.14,2620.18,2626.95,2639.67,2641.16,2634.88,2632.69,2588.03,2576.76,2579.08,2613.11,2633.34,2645.21,2665.95,2661.66,2725.38,2755.27,2761.83,2776.19,2739.65,2726.34,2742.6,2743.91,2751.74,2753.63,2774.01,2742.92,2727.96,2656.21,2678.97,2684.71,2676.76,2693.5,2647.68,2683.58,2696.95,2688.05,2679.09,2672.04,2717.53,2686.9,2693.34,2691.61,2687.98,2691.16,2689.49,2692.97,2684.64,2696.33,2696.69,2718.27,2709.8,2689.76,2691.43,2688.65,2652.08,2644.31,2669,2677.95,2673.5,2688.71,2665.2,2712.36,2732.47,2674.17,2690.01,2677.98,2671.55,2674.87,2697.8,2683.72,2669.61,2686.01,2696.07,2677.48,2706.56,2682.69,2700.7,2706.42,2719.65,2737.29,2746.63,2697.36,2668.04,2668.59,2682.04,2681.51,2684.55,2681.69,2685.47,2687.23,2694.44,2705.56,2699.99,2698.99,2701.64,2726.94,2716.16,2726.49,2718.39,2697.23,2709.25,2709.98,2699.32,2707.69,2714.09,2702.04,2691.91,2697.49,2611.14,2616.32,2578.94,2570.73,2571.09,2574.14,2564.34,2568.41,2537.43,2435.66,2464.59,2474.8,2493.69,2504.5,2506.61,2489.03,2477.54,2487.7,2491.38,2495.48,2497.42,2512,2513.72,2506.52,2499.61,2500.8,2506.58,2535.73,2536.64,2536.94,2546.72,2564.19,2546.21,2530.4,2521.59,2447.17,2508.74,2529.1,2500.86,2516.45,2508.46,2497.95,2513.6,2511.59,2504.75,2429.83,2430.98,2421.6,2359.63,2380.06,2363.31,2440.64,2452.9,2442.08,2440.22,2455.07,2477.77,2431.32,2413.21,2423.54,2428.06,2435.04,2434.2,2410.57,2418.65,2402.82,2425.53,2408.62,2418.23,2379.6,2338.25,2410.31,2424.51,2430.86,2420.04,2394.29,2395.04,2408.01,2415.01,2391.32,2384.68,2441.16,2437.92,2449.2,2444.3,2456.24,2469.37,2512.54,2494.54,2473.76,2444.66,2430.27,2400.34,2398.91,2387.2,2389.14,2410.73,2401.48,2403.04,2407.85,2394.51,2387.6,2382.82,2375.01,2365.74,2306.41,2339.62,2358.82,2362.8,2347.99,2339.85,2344.44,2351.05,2329.87,2303.1,2318.71,2334.05,2328.26,2318.2,2324.55,2314.88,2314.9,2316.04,2347.18,2347.98,2350.36,2360.63,2361.36,2361.64,2334.87,2371.51,2359.68,2309.03,2310.36,2325.28,2369.06,2336.89,2253.13,2237.82,2237.07,2236.62,2227.44,2240.32,2245.54,2240,2244.04,2248.64,2250.88,2254.68,2255.66,2268.43,2270.3,2270.32,2266.97,2259.3,2275.31,2309.25,2284.62,2286.62,2273.41,2254.18,2253.29,2253.49,2258.64,2267.14,2299.41,2287.04,2274.77,2249.34,2303.6,2327.96,2425.99,2406.47,2424.61,2424.41,2416.13,2421,2252.7,2262.05,2238.01,2236.26,2228.85,2243.87,2230.71,2235.79,2238.67,2245.11,2244];
+
+let A=null, AK='btc';
+const ASSETS={
+  btc:{key:'btc', sym:'BTC', name:'Bitcoin', pair:'BTCUSDT', tv:'BINANCE:BTCUSDT', doc:'cycle', dp:0, cycleNo:5, nextName:'Cycle 6', halvLabel:'Halving', W0:'2011-09-12',
+    retest:{def:62000,min:30000,max:80000,step:1000},
+    annual:{2014:-0.58,2015:0.35,2016:1.25,2017:13.31},
+    lateNote:'matches Nov/Dec 2013, 2017, 2021 tops',
+    tell:a=>`A new high above <b class="mono">$${Math.round(a.p).toLocaleString('en-US')}</b> before the April 2028 halving. Only the 2022–25 cycle did this.`,
+    cyclesNote:'Peaks keep landing in Q4 of the year after a halving: Nov 2013, Dec 2017, Nov 2021, Oct 2025. Every bull has also been smaller than the one before, and the 2025–26 bear was the shallowest and shortest on record.',
+    limits:'<b>Limits.</b> Four cycles is a tiny sample, the 2025 cycle already broke the pattern of deep drawdowns, and ETF and macro flows can override halving timing. Treat this as a map of what repeating history would look like, not a forecast. Not financial advice.',
+    dataNote:'<b>Data.</b> Binance BTCUSDT monthly, weekly, daily and 4H candles (built-in snapshot from 28 Oct 2026; the Refresh button replaces it with the latest TradingView BINANCE:BTCUSDT candles). Weekly history before Aug 2017 comes from Bitstamp BTCUSD daily candles (2013 top $1,163, 2015 low $152.40). 2014–2017 annual returns are widely published figures.',
+    scenExtra:'',
+    cycles:(ATH,LOW)=>[
+      {name:'Cycle 2', halv:'2012-11-28', top:'2013-11-30', topP:1163, bot:'2015-01-14', botP:152},
+      {name:'Cycle 3', halv:'2016-07-09', top:'2017-12-17', topP:19799, bot:'2018-12-15', botP:3156},
+      {name:'Cycle 4', halv:'2020-05-11', top:'2021-11-10', topP:69000, bot:'2022-11-21', botP:15476},
+      {name:'Cycle 5', halv:'2024-04-20', top:ATH.d, topP:ATH.p, bot:LOW.d, botP:LOW.p},
+    ],
+    replays:(ATH,LOW)=>({R:[
+      {k:'r22', name:'Last cycle · 2022–25', short:'2022–25', follow:'Last cycle · 2022–25', sub:'2024 halving · ETF era', color:'--r22', bot:'2022-11-21', botP:15476, halv:'2024-04-20', top:ATH.d, topP:ATH.p, nextBot:LOW.d, nextBotP:LOW.p},
+      {k:'r18', name:'2018–21 cycle', short:'2018–21', follow:'2018–21', sub:'2020 halving', color:'--r18', bot:'2018-12-15', botP:3156, halv:'2020-05-11', top:'2021-11-10', topP:69000, nextBot:'2022-11-21', nextBotP:15476},
+      {k:'r15', name:'2015–17 cycle', short:'2015–17', follow:'2015–17', sub:'2016 halving', color:'--r15', bot:'2015-01-14', botP:152.4, halv:'2016-07-09', top:'2017-12-17', topP:19799, nextBot:'2018-12-15', nextBotP:3156},
+    ], PB:{ r22:['2021-11-10',69000,'2022-11-21',15476], r18:['2017-12-17',19799,'2018-12-15',3156], r15:['2013-11-30',1163,'2015-01-14',152.4] }}),
+    data:null
+  },
+  eth:{key:'eth', sym:'ETH', name:'Ethereum', pair:'ETHUSDT', tv:'BINANCE:ETHUSDT', doc:'cycle_eth', dp:2, cycleNo:3, nextName:'Cycle 4', halvLabel:'BTC halving', W0:'2015-08-03',
+    retest:{def:1400,min:300,max:2500,step:50},
+    annual:{2016:7.54,2017:88.52},
+    lateNote:'Q4 of the top year; ETH topped Jan 2018, Nov 2021 and Aug 2025',
+    tell:a=>`A new high above <b class="mono">$${Math.round(a.p).toLocaleString('en-US')}</b> before the April 2028 halving. No past ETH cycle did this: ETH has topped 15–19 months after each Bitcoin halving.`,
+    cyclesNote:'ETH tops landed 15–19 months after each Bitcoin halving: Jan 2018, Nov 2021 and Aug 2025 (two months ahead of BTC last cycle). Each bull has been far smaller than the one before (about 3,400× → 60× → 5.6× off the low), and the 2025 high was only 2% above the 2021 high. ETH bears have also eased: −94%, −82%, then −70% into the Jun 2026 low.',
+    limits:'<b>Limits.</b> Three cycles is a tiny sample, and the first started from launch-era prices. ETH also trades partly as a high-beta version of Bitcoin: its tops and lows follow the Bitcoin halving cycle, and ETH/BTC has been falling since 2022, which the replays do not model. Treat this as a map of what repeating history would look like, not a forecast. Not financial advice.',
+    dataNote:'<b>Data.</b> Binance ETHUSDT monthly, weekly, daily and 4H candles (built-in snapshot from 7 Nov 2026; the Refresh button replaces it with the latest TradingView BINANCE:ETHUSDT candles). Weekly history before Aug 2017 comes from Kraken ETHUSD via TradingView (from Aug 2015); 2016–17 annual returns use those weekly closes. There is no 2015–17 replay for ETH: it launched in Jul 2015, so there is no earlier bear to compare with and too little history for the weekly SMAs.',
+    scenExtra:'<p>ETH\'s 2025 high was only 2% above its 2021 high, so the top-to-top model expects roughly a double top, and the scaled target sits below the old high. Switch Sizing to "Same % as original" to see a full repeat of the 2022–25 run instead.</p>',
+    cycles:(ATH,LOW)=>[
+      {name:'Cycle 1', prevBot:'2015-10-20', prevBotP:0.42, halv:'2016-07-09', top:'2018-01-13', topP:1440, bot:'2018-12-15', botP:81.79},
+      {name:'Cycle 2', halv:'2020-05-11', top:'2021-11-10', topP:4868, bot:'2022-06-18', botP:881.56},
+      {name:'Cycle 3', halv:'2024-04-20', top:ATH.d, topP:ATH.p, bot:LOW.d, botP:LOW.p},
+    ],
+    replays:(ATH,LOW)=>({R:[
+      {k:'r22', name:'Last cycle · 2022–25', short:'2022–25', follow:'Last cycle · 2022–25', sub:'2024 halving · ETF era', color:'--r22', bot:'2022-06-18', botP:881.56, halv:'2024-04-20', top:ATH.d, topP:ATH.p, nextBot:LOW.d, nextBotP:LOW.p},
+      {k:'r18', name:'2018–21 cycle', short:'2018–21', follow:'2018–21', sub:'2020 halving', color:'--r18', bot:'2018-12-15', botP:81.79, halv:'2020-05-11', top:'2021-11-10', topP:4868, nextBot:'2022-06-18', nextBotP:881.56},
+    ], PB:{ r22:['2021-11-10',4868,'2022-06-18',881.56], r18:['2018-01-13',1440,'2018-12-15',81.79] }}),
+    data:{ at:1794027172440, src:'Binance snapshot', price:2244,
+      M_RAW: ETH_MC.map((c,i)=>{ const y=2017+Math.floor((7+i)/12), mo=(7+i)%12+1; return `${y}-${String(mo).padStart(2,'0')}-01,${c},${c},${c},${c}`; }).join(';'),
+      WK_BN: ETH_WK, D_C: ETH_D, H4_C: ETH_H4,
+      ATH:{d:'2025-08-24',p:4956.78}, LOW:{d:'2026-06-06',p:1505.68},
+      LEVELS:{hi:{p:2807.34,m:'Sept 2026'},lo30:{p:2174.08,m:'Oct 2026'},lo90:{p:2358.88,m:'Sept 2026'}} }
+  }
+};
+ASSETS.btc.data={M_RAW, WK_BN, W_C, D_C, H4_C, price:PRICE, ATH, LOW, LEVELS, at:DATA_AT.getTime(), src:DATA_SRC};
+Object.values(ASSETS).forEach(a=>{ a.baseATH={...a.data.ATH}; a.baseAt=a.data.at; });
+function loadAsset(k){
+  if(!ASSETS[k]) k='btc'; AK=k; A=ASSETS[k]; const d=A.data;
+  M_RAW=d.M_RAW; WK_BN=d.WK_BN; W_C=d.W_C||String(d.WK_BN).split(',').map(Number).slice(-60); D_C=d.D_C; H4_C=d.H4_C;
+  PRICE=d.price; ATH=d.ATH; LOW=d.LOW; LEVELS=d.LEVELS; NOW=new Date(d.at); DATA_AT=new Date(d.at); DATA_SRC=d.src;
+}
+function initialAsset(){
+  const hsh=(location.hash||'').slice(1).toLowerCase(); if(ASSETS[hsh]) return hsh;
+  try{ const s=localStorage.getItem('cycleAsset'); if(ASSETS[s]) return s; }catch(e){}
+  return 'btc';
+}
+function boot(){
+const SEP_HIGH=LEVELS.hi.p, OCT_LOW=LEVELS.lo30.p, SEP_LOW=LEVELS.lo90.p;
+const HALVING_2028 = '2028-04-15';
+
+const M = M_RAW.split(';').map(r=>{const [d,o,h,l,c]=r.split(',');return {d, y:+d.slice(0,4), m:+d.slice(5,7), o:+o,h:+h,l:+l,c:+c};});
+const mIdx = key => M.findIndex(r=>r.d.slice(0,7)===key);
+
+// ---------- helpers ----------
+const DAY=864e5;
+const toD = s => new Date(s+'T00:00:00Z');
+const addDays = (s,n) => new Date(toD(s).getTime()+n*DAY);
+const yf = dt => { const y=dt.getUTCFullYear(); const s=Date.UTC(y,0,1), e=Date.UTC(y+1,0,1); return y+(dt.getTime()-s)/(e-s); };
+const days = (a,b) => Math.round((toD(b)-toD(a))/DAY);
+const fmt$ = v => v>=1e6? '$'+(v/1e6).toFixed(2)+'M' : v<10 ? '$'+v.toFixed(2) : '$'+Math.round(v).toLocaleString('en-US');
+const fmtK = v => v>=1e6 ? '$'+(v/1e6).toFixed(2)+'M' : v>=10000 ? '$'+(v/1000).toFixed(v>=100000||Number.isInteger(v/1000)?0:1)+'k' : v>=10 ? '$'+Math.round(v).toLocaleString('en-US') : '$'+v.toFixed(2);
+const pct = v => (v>=0?'+':'')+(v*100).toFixed(Math.abs(v)<0.1?1:0)+'%';
+const monthName = dt => dt.toLocaleString('en-AU',{month:'short',year:'numeric',timeZone:'UTC'});
+const interp = (arr,t) => { t=Math.min(1,Math.max(0,t)); const x=t*(arr.length-1), i=Math.floor(x), f=x-i; return i>=arr.length-1? arr[arr.length-1] : arr[i]*(1-f)+arr[i+1]*f; };
+const resample = (arr,n) => Array.from({length:n},(_,i)=>interp(arr,i/(n-1)));
+
+// ---------- past cycles ----------
+const CYC = A.cycles(ATH,LOW);
+// bull length (prior bottom -> this top), top-to-top
+for(let i=0;i<CYC.length;i++){
+  const c=CYC[i], p=CYC[i-1];
+  const pb=c.prevBot||(p&&p.bot), pbP=c.prevBotP||(p&&p.botP);
+  if(pb){ c.bullDays=days(pb,c.top); c.bullMult=c.topP/pbP; }
+  if(p){ c.t2tDays=days(p.top,c.top); c.t2tMult=c.topP/p.topP; }
+}
+CYC.forEach(c=>{ c.h2t=days(c.halv,c.top); c.bearDays=days(c.top,c.bot); c.dd=1-c.botP/c.topP; });
+
+// Log-gain decay
+const lastN=(a,n)=>a.slice(Math.max(0,a.length-n));
+const ratioAvg=a=>{ const r=[]; for(let i=1;i<a.length;i++) r.push(a[i]/a[i-1]); return r.reduce((s,v)=>s+v,0)/r.length; };
+const avgR=a=>Math.round(a.reduce((s,v)=>s+v,0)/a.length);
+const lnB = lastN(CYC.filter(c=>c.bullMult).map(c=>Math.log(c.bullMult)),3);
+const lnT = lastN(CYC.filter(c=>c.t2tMult).map(c=>Math.log(c.t2tMult)),3);
+const rB = ratioAvg(lnB), rT = ratioAvg(lnT);
+const NEXT_BULL_MULT = Math.exp(lnB[lnB.length-1]*rB);      // next bottom->top multiple
+const NEXT_T2T_MULT  = Math.exp(lnT[lnT.length-1]*rT);      // next top / prior top
+const avgBull = avgR(lastN(CYC.filter(c=>c.bullDays).map(c=>c.bullDays),3));
+const avgT2T  = avgR(lastN(CYC.filter(c=>c.t2tDays).map(c=>c.t2tDays),2));
+const avgH2T  = avgR(lastN(CYC.map(c=>c.h2t),3));
+const ddLogs = lastN(CYC.map(c=>Math.log(1/(1-c.dd))),3);
+const ddRatio = ratioAvg(ddLogs);
+const NEXT_DD = 1-Math.exp(-ddLogs[ddLogs.length-1]*ddRatio);
+
+// ---------- weekly history: Bitstamp 2011-09-12 → 2017-08-07, then Binance BTCUSDT ----------
+const WK_BS="955,787,862,613,728,905,844,842,815,815,687,621,610,566,640,635,561,460,456,416,500,430,438,440,447,574,631,658,589,600,600,631,631,627,590,589,591,497,508,479,475,475,400,375,324,378,388,355,324,365,390,367,377,377,357,320,318,264,266,212,255,227,224,236,237,258,275,287,268,242,261,237,223,220,239,239,236,239,229,223,232,244,249,272,311,275,293,282,265,256,229,229,240,230,230,232,239,248,261,284,326,373,319,324,371,388,433,443,422,431,449,380,402,368,375,405,439,432,406,413,411,425,419,420,427,460,453,458,458,439,518,574,672,761,630,658,649,680,661,624,592,569,578,573,604,606,608,599,609,613,639,649,697,710,700,727,727,762,769,789,891,998,910,822,924,912,1011,1001,1052,1179,1273,1227,1018,960,1078,1206,1162,1242,1350,1554,1784,2018,2179,2530,2954,2517,2502,2504,2502,1918,2749,2742,3223,4054";
+const WK_PRE="4.92,6.05,4.82,3.89,4.05,2.27,3.5,2.95,3.35,2.37,2.77,2.93,3.27,3.5,4.27,5,7,7.15,6.79,5.5,5.6,5.67,4.38,4.98,4.81,5,5.25,4.54,4.89,4.76,4.99,5.17,4.91,5.08,4.94,5.03,5.07,5.19,5.42,6.19,6.4,6.52,6.73,7.57,8.42,8.71,10.71,11.49,8.06,10.31,10.18,10.98,11.75,11.99,12.22,11.71,11.79,11.32,10.54,10.64,10.82,11.51,12.31,12.42,13.29,13.27,13.14,13.2,13.15,13.64,15.5,17.6,20.29,23.7,26.98,29.78,34.33,45.29,47.24,70.22,96.15,164.97,91.11,118.81,135.28,116.57,114.5,116.38,129.5,123,100.17,99.37,100.41,89.53,73.96,90.03,85.93,92.71,96.38,94.09,99.3,113.12,130.66,118.34,125.36,123.27,127.01,122.49,132.82,166.59,194,210,323,477.38,800.05";
+const WALL=((A.key==='btc'? WK_PRE+','+WK_BS : ETH_PRE)+','+WK_BN).split(',').map(Number);
+const W0=A.W0;
+const weekOf = s => Math.floor((toD(s)-toD(W0))/(7*DAY));
+const NOW_W = WALL.length-1;
+
+// ---------- replays ----------
+const RP=A.replays(ATH,LOW);
+const REPLAYS=[...RP.R, {k:'inst', name:'Institutional cycle', short:'Institutional', follow:'Institutional', sub:'hypothetical · longer, smoother', color:'--inst', inst:true}];
+const PREV_BEAR = RP.PB;
+const KEYS = REPLAYS.map(r=>r.k);
+
+function wSeg(a,b,fn){ const out=[]; for(let i=a;i<=b;i++) out.push(fn(i)); return out; }
+REPLAYS.filter(r=>!r.inst).forEach(r=>{
+  const b=weekOf(r.bot), h=weekOf(r.halv), t=weekOf(r.top), n=weekOf(r.nextBot), L=Math.log(r.topP/r.botP), Lb=Math.log(r.topP/r.nextBotP);
+  const v=i=> i===b?0: i===t?1: Math.log(WALL[i]/r.botP)/L;
+  r.pre=resample(wSeg(b,h,v),81); r.post=resample(wSeg(h,t,v),81);
+  r.bear=resample(wSeg(t,n,i=> i===t?0: i===n?1: Math.log(r.topP/WALL[i])/Lb),61);
+  r.preDays=days(r.bot,r.halv); r.postDays=days(r.halv,r.top); r.bearDays=days(r.top,r.nextBot);
+  r.mult=r.topP/r.botP; r.nextDD=1-r.nextBotP/r.topP;
+});
+
+// ---------- match so far ----------
+function bearCurve(top,topP,bot,botP){ const a=weekOf(top), b=weekOf(bot), L=Math.log(topP/botP); return resample(wSeg(a,b,i=> i===a?0: i===b?1: Math.log(topP/WALL[i])/L),41); }
+const CUR_BEAR = bearCurve(ATH.d, ATH.p, LOW.d, LOW.p);
+const CUR_DD = 1-LOW.p/ATH.p, CUR_BEAR_DAYS = days(ATH.d, LOW.d);
+const LOW_W = weekOf(LOW.d), WEEKS_SINCE = NOW_W-LOW_W;
+REPLAYS.filter(r=>!r.inst).forEach(r=>{
+  const [pt,ptP,pb,pbP]=PREV_BEAR[r.k];
+  const curve=bearCurve(pt,ptP,pb,pbP);
+  const dd=1-pbP/ptP, bd=days(pt,pb);
+  const shape=1-curve.reduce((s,v,i)=>s+Math.abs(v-CUR_BEAR[i]),0)/curve.length;
+  const depth=Math.min(dd,CUR_DD)/Math.max(dd,CUR_DD);
+  const dur=Math.min(bd,CUR_BEAR_DAYS)/Math.max(bd,CUR_BEAR_DAYS);
+  const bR=weekOf(r.bot); let gap=0;
+  for(let k=0;k<=WEEKS_SINCE;k++) gap+=Math.abs(Math.log(WALL[LOW_W+k]/LOW.p)-Math.log(WALL[bR+k]/r.botP));
+  gap/=WEEKS_SINCE+1;
+  const rec=Math.max(0,1-gap/0.5);
+  r.match={shape,depth,dur,rec,overall:(shape+depth+dur+rec)/4, prevDD:dd, prevBearDays:bd, gainThen:WALL[bR+WEEKS_SINCE]/r.botP-1};
+});
+const CUR_GAIN = WALL[NOW_W]/LOW.p-1;
+
+// ---------- weekly SMA fingerprint ----------
+const SMA_CACHE={};
+function smaW(n,i){ const key=n+':'+i; if(SMA_CACHE[key]) return SMA_CACHE[key]; const a=Math.max(0,i-n+1); let s=0; for(let j=a;j<=i;j++) s+=WALL[j]; return SMA_CACHE[key]=s/(i-a+1); }
+function fingerprint(top,topP,bot,botP){
+  const ti=weekOf(top), bi=weekOf(bot), lim=NOW_W;
+  const firstFrom=(from,f,max=160)=>{ for(let i=from;i<=lim&&i<=from+max;i++) if(f(i)) return i-from; return null; };
+  let below=0; for(let i=ti;i<=Math.min(bi+30,lim);i++) if(WALL[i]<smaW(200,i)) below++;
+  return {
+    lowVs200: botP/smaW(200,bi), below200: below,
+    lose50: firstFrom(ti,i=>WALL[i]<smaW(50,i)),
+    death: firstFrom(ti,i=>smaW(20,i)<smaW(50,i)),
+    r20: firstFrom(bi,i=>WALL[i]>smaW(20,i)),
+    r50: firstFrom(bi,i=>WALL[i]>smaW(50,i)),
+    r100: firstFrom(bi,i=>WALL[i]>smaW(100,i)),
+    gc: firstFrom(bi,i=>smaW(20,i)>smaW(50,i)),
+    path50: Array.from({length:WEEKS_SINCE+1},(_,k)=>Math.log(WALL[bi+k]/smaW(50,bi+k))),
+    bi, ti
+  };
+}
+const CUR_FP = fingerprint(ATH.d,ATH.p,LOW.d,LOW.p);
+const tSim=(a,b)=> (a==null||b==null)? null : (Math.max(a,b)===0?1:Math.min(a,b)/Math.max(a,b));
+REPLAYS.filter(r=>!r.inst).forEach(r=>{
+  const [pt,ptP,pb,pbP]=PREV_BEAR[r.k]; const fp=fingerprint(pt,ptP,pb,pbP);
+  const parts={
+    floor: Math.max(0,1-Math.abs(Math.log(fp.lowVs200/CUR_FP.lowVs200))/0.5),
+    below: 1-Math.abs(fp.below200-CUR_FP.below200)/Math.max(fp.below200,CUR_FP.below200,10),
+    lose50: tSim(fp.lose50,CUR_FP.lose50), death: tSim(fp.death,CUR_FP.death),
+    r20: tSim(fp.r20,CUR_FP.r20), r50: tSim(fp.r50,CUR_FP.r50),
+    path: Math.max(0,1-fp.path50.reduce((s,v,i)=>s+Math.abs(v-CUR_FP.path50[i]),0)/fp.path50.length/0.5),
+  };
+  // golden cross not printed yet: a cycle that crossed earlier than now is a miss
+  if(CUR_FP.gc==null) parts.gc = fp.gc!=null && fp.gc<=WEEKS_SINCE ? 0 : 1;
+  const vals=Object.values(parts).filter(v=>v!=null);
+  r.fp=fp; r.smaParts=parts; r.smaScore=vals.reduce((s,v)=>s+v,0)/vals.length;
+  r.match.price=r.match.overall; r.match.sma=r.smaScore; r.match.overall=(r.match.price+r.smaScore)/2;
+});
+const RANKED = REPLAYS.filter(r=>!r.inst).sort((a,b)=>b.match.overall-a.match.overall);
+const BEST = RANKED[0];
+
+// ---------- state ----------
+const state = { bottom:'in', retest_btc:62000, retest_eth:1400, peak:'halv', size:'scaled', follow:'auto', show:{r22:true,r18:true,r15:true,inst:true}, sma:'50', outlook:'q' };
+try{ const s=JSON.parse(localStorage.getItem('btcCycleMap3')||'null'); if(s) Object.assign(state,s,{show:Object.assign(state.show,s.show||{})}); }catch(e){}
+const save=()=>{ try{ localStorage.setItem('btcCycleMap3',JSON.stringify(state)); }catch(e){} };
+
+function model(){
+  const bot = state.bottom==='in' ? {d:LOW.d, p:LOW.p} : {d:'2026-12-15', p:state['retest_'+A.key]};
+  const clocks = { early: addDays(bot.d, avgBull), halv: addDays(HALVING_2028, avgH2T), late: toD('2029-12-01'), t2t: addDays(ATH.d, avgT2T) };
+  const decayBull = bot.p*NEXT_BULL_MULT, decayBear = ATH.p*NEXT_T2T_MULT, base = Math.sqrt(decayBull*decayBear);
+  const baseDD = Math.max(NEXT_DD,0.40)+0.03;
+  const bx=yf(toD(bot.d)), nx=yf(NOW), HX=yf(toD(HALVING_2028));
+  const R={};
+  REPLAYS.forEach(r=>{
+    let hx,px,P,dd,bearLen,peakDt;
+    if(r.inst){
+      const pd = new Date(clocks[state.peak].getTime()+365*DAY); px=yf(pd); peakDt=pd; P=base; dd=0.30; bearLen=0.75;
+    } else {
+      if(state.peak==='early'){ hx=bx+r.preDays/365.25; px=hx+r.postDays/365.25; }
+      else { hx=HX; px=yf(clocks[state.peak]); }
+      peakDt=new Date(Date.UTC(Math.floor(px),0,1)+(px-Math.floor(px))*365.25*DAY);
+      P = state.size==='raw' ? bot.p*r.mult : base;
+      dd = state.size==='raw' ? r.nextDD : baseDD;
+      bearLen = state.size==='raw' ? r.bearDays/365.25 : 1.0;
+    }
+    const f=x=>{
+      if(state.bottom==='retest' && x<bx){ const t=(x-nx)/(bx-nx); return Math.exp(Math.log(PRICE)*(1-t)+Math.log(bot.p)*t); }
+      if(x<=px){
+        let s;
+        if(r.inst){ const t=Math.min(1,Math.max(0,(x-bx)/(px-bx))); s=t+0.035*Math.sin(6*Math.PI*t); }
+        else s = x<hx ? interp(r.pre,(x-bx)/(hx-bx)) : interp(r.post,(x-hx)/(px-hx));
+        return bot.p*Math.exp(Math.log(P/bot.p)*s);
+      }
+      const t=(x-px)/bearLen;
+      const sb = r.inst ? (1-Math.cos(Math.PI*Math.min(1,t)))/2 : interp(r.bear,t);
+      return P*Math.exp(Math.log(1-dd)*sb);
+    };
+    const g=x=>{ let v=f(x); if(state.bottom==='in'){ const off=Math.log(PRICE/f(nx)); v*=Math.exp(off*Math.max(0,1-(x-nx)/0.75)); } return v; };
+    const pts=[]; for(let x=nx;x<=px+bearLen+0.001;x+=1/26) pts.push([x,g(x)]); pts.push([px,g(px)]); pts.sort((a,b)=>a[0]-b[0]);
+    const end=px+bearLen;
+    R[r.k]={r,P,dd,px,hx,peakDt,bearLen,g,f,pts,low:P*(1-dd),lowDt:new Date(peakDt.getTime()+bearLen*365.25*DAY),athBeforeHalving: !r.inst && hx<px && g(hx-0.01)>ATH.p, end};
+  });
+  return {bot,clocks,base,decayBull,decayBear,baseDD,R,nx,HX};
+}
+const primaryKey = () => (state.follow!=='auto' && KEYS.includes(state.follow)) ? state.follow : (RANKED.find(r=>state.show[r.k])||BEST).k;
+
+// ---------- render: stat strip ----------
+function renderStrip(m){
+  const pk=primaryKey(), p=m.R[pk], pr=REPLAYS.find(r=>r.k===pk);
+  const items=[
+    [A.sym+' price', fmt$(PRICE), DATA_SRC.replace(' '+A.tv,'')+' · '+DATA_AT.toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})],
+    ['From '+monthName(toD(ATH.d))+' top', pct(PRICE/ATH.p-1), 'ATH '+fmt$(ATH.p)+' · '+toD(ATH.d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})],
+    ['Bear low so far', fmt$(LOW.p), toD(LOW.d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})+' · −'+Math.round(CUR_DD*100)+'% · '+CUR_BEAR_DAYS+' days'],
+    ['Up from low', pct(CUR_GAIN), WEEKS_SINCE+' weeks ago'],
+    ['Closest match so far', BEST.short, Math.round(BEST.match.overall*100)+'% overall match'],
+    ['Following: '+pr.short, fmtK(p.P), monthName(p.peakDt)+' · next bear low ≈ '+fmtK(p.low)],
+  ];
+  document.getElementById('strip').innerHTML=items.map(([k,v,s])=>`<div class="stat"><span class="k">${k}</span><span class="v">${v}</span><span class="s">${s}</span></div>`).join('');
+}
+
+// ---------- render: projection chart ----------
+function renderChart(m){
+  const svg=document.getElementById('chart');
+  const W=Math.max(640, svg.parentElement.clientWidth), Hh=Math.round(Math.min(480, Math.max(340, W*0.5)));
+  svg.setAttribute('viewBox',`0 0 ${W} ${Hh}`); svg.setAttribute('width',W); svg.setAttribute('height',Hh);
+  const vis=REPLAYS.filter(r=>state.show[r.k]);
+  const maxP=Math.max(ATH.p*1.6,...vis.map(r=>m.R[r.k].P));
+  const pad={l:62,r:16,t:16,b:30}, x0=2017.6, x1=2031.8, y0=Math.log(Math.min(...CYC.filter(c=>yf(toD(c.bot))>=2017.6).map(c=>c.botP), ...M.map(r=>r.c))*0.7), y1=Math.log(maxP*1.6);
+  const grid=[]; for(let e=Math.floor(y0/Math.LN10);e<=Math.ceil(y1/Math.LN10);e++) for(const k of [1,2,5]){ const v=k*10**e; if(Math.log(v)>y0+0.05 && Math.log(v)<y1) grid.push(v); }
+  svg.setAttribute('aria-label',A.name+' monthly price on a log scale from 2017 with projected replay paths to 2031');
+  const X=x=>pad.l+(x-x0)/(x1-x0)*(W-pad.l-pad.r), Y=v=>pad.t+(1-(Math.log(v)-y0)/(y1-y0))*(Hh-pad.t-pad.b);
+  let s='';
+  [2017,2021,2025,2029].forEach(y=>{ s+=`<rect x="${X(y+0.75)}" y="${pad.t}" width="${X(y+1)-X(y+0.75)}" height="${Hh-pad.t-pad.b}" fill="var(--q4)"/>`; });
+  grid.forEach(v=>{ s+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pad.l-8}" y="${Y(v)+4}" text-anchor="end">${v>=1e6?'$'+(v/1e6)+'M':fmtK(v)}</text>`; });
+  for(let y=2018;y<=2031;y++){ const lbl=(W<760 && y%2)?'':y; s+=`<line x1="${X(y)}" x2="${X(y)}" y1="${Hh-pad.b}" y2="${Hh-pad.b+4}" stroke="var(--line)"/><text x="${X(y)}" y="${Hh-10}" text-anchor="middle">${lbl}</text>`; }
+  [['2020-05-11',A.halvLabel],['2024-04-20',A.halvLabel],[HALVING_2028,A.halvLabel+' (est.)']].forEach(([d,l])=>{ const x=X(yf(toD(d))); s+=`<line x1="${x}" x2="${x}" y1="${pad.t}" y2="${Hh-pad.b}" stroke="var(--muted)" stroke-dasharray="2 4" stroke-width="1"/><text x="${x+4}" y="${pad.t+12}">${l}</text>`; });
+  s+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${Y(ATH.p)}" y2="${Y(ATH.p)}" stroke="var(--btc)" stroke-dasharray="1 3" stroke-width="1"/><text x="${W-pad.r}" y="${Y(ATH.p)-5}" text-anchor="end" style="fill:var(--btc)">${toD(ATH.d).getUTCFullYear()} ATH ${fmtK(ATH.p)}</text>`;
+  const hist=M.map(r=>[r.y+(r.m)/12, r.c]); hist[hist.length-1]=[yf(NOW),PRICE];
+  s+=`<path d="${hist.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="var(--hist)" stroke-width="1.6"/>`;
+  CYC.filter(c=>yf(toD(c.top))>=x0).map(c=>[yf(toD(c.top)),c.topP,monthName(toD(c.top))]).forEach(([x,v,l])=>{ s+=`<circle cx="${X(x)}" cy="${Y(v)}" r="3.5" fill="var(--btc)"/><text x="${X(x)}" y="${Y(v)-9}" text-anchor="middle">${l}</text>`; });
+  const prim=primaryKey();
+  [...vis].sort((a,b)=>(a.k===prim)-(b.k===prim)).forEach(r=>{ const q=m.R[r.k];
+    s+=`<path d="${q.pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="var(${r.color})" stroke-width="${r.k===prim?2.6:1.5}" ${r.inst?'stroke-dasharray="6 4"':''}/>`;
+    s+=`<circle cx="${X(q.px)}" cy="${Y(q.P)}" r="3.5" fill="var(${r.color})"/>`;
+  });
+  // peak labels, de-overlapped
+  const labs=vis.map(r=>({r,x:X(m.R[r.k].px),y:Y(m.R[r.k].P)})).sort((a,b)=>a.y-b.y);
+  for(let i=1;i<labs.length;i++) if(labs[i].y-labs[i-1].y<13 && Math.abs(labs[i].x-labs[i-1].x)<90) labs[i].y=labs[i-1].y+13;
+  labs.forEach(l=>{ s+=`<text x="${l.x+7}" y="${l.y+4}" style="fill:var(${l.r.color})">${l.r.short} ${fmtK(m.R[l.r.k].P)}</text>`; });
+  s+=`<line x1="${X(m.nx)}" x2="${X(m.nx)}" y1="${pad.t}" y2="${Hh-pad.b}" stroke="var(--btc)" stroke-width="1"/><text x="${X(m.nx)-4}" y="${Hh-pad.b-6}" text-anchor="end" style="fill:var(--btc)">Today</text><circle cx="${X(m.nx)}" cy="${Y(PRICE)}" r="4" fill="var(--btc)"/><text x="${X(m.nx)-7}" y="${Y(PRICE)+16}" text-anchor="end" style="fill:var(--btc);font-weight:500">${fmtK(PRICE)}</text>`;
+  if(state.bottom==='retest'){ const bx=X(yf(toD(m.bot.d))); s+=`<circle cx="${bx}" cy="${Y(m.bot.p)}" r="4" fill="none" stroke="var(--muted)" stroke-width="1.6"/><text x="${bx+7}" y="${Y(m.bot.p)+14}">retest ${fmtK(m.bot.p)}</text>`; }
+  s+=`<g id="hoverLayer" pointer-events="none"></g>`;
+  svg.innerHTML=s;
+  CH={X,Y,x0,x1,pad,W,Hh,m,vis};
+  showAt(CH.lastX ?? m.R[primaryKey()].px);
+  document.getElementById('chartNote').textContent = (state.size==='scaled'
+    ? `Scaled: every replay keeps its own shape but reaches the same diminishing-returns target (${fmtK(m.base)}), so the lines differ in route and timing.`
+    : `Same % moves: each replay repeats its original gain off the low and its following bear. Older cycles give extreme numbers because ${A.name} was far smaller then.`)
+    + (state.peak==='early' ? ' Own clock: each replay keeps its original bottom → halving → top spacing.' : ' Halving clock: each replay is stretched so its halving lands on April 2028.')
+    + ' Thick line = the cycle you are following. Tap the coloured chips to show or hide lines.';
+}
+
+// ---------- price readout ----------
+let CH=null, lastHover=null;
+function actualAt(x){ const y=Math.floor(x), mo=Math.floor((x-y)*12+1e-6); const r=M.find(z=>z.y===y&&z.m===mo+1) || M.find(z=>z.y===y&&z.m===mo); return x>=yf(NOW)-1/24? PRICE : (r? r.c : null); }
+function showAt(x){
+  if(!CH) return; const {X,Y,x0,x1,pad,Hh,m,vis}=CH;
+  x=Math.min(x1,Math.max(x0,x)); lastHover=x;
+  const layer=document.getElementById('hoverLayer'); if(!layer) return;
+  const dt=new Date(Date.UTC(Math.floor(x),0,1)+(x-Math.floor(x))*365.25*DAY);
+  let g=`<line x1="${X(x)}" x2="${X(x)}" y1="${pad.t}" y2="${Hh-pad.b}" stroke="var(--ink)" stroke-opacity=".35" stroke-width="1"/>`;
+  const items=[];
+  if(x<=m.nx+1/48){ const v=actualAt(x); if(v){ g+=`<circle cx="${X(x)}" cy="${Y(v)}" r="4" fill="var(--hist)"/>`; items.push(`<span class="it"><span class="dot" style="background:var(--hist)"></span>Actual <b>${fmt$(v)}</b> <small>${pct(v/PRICE-1)} vs today</small></span>`); } }
+  else {
+    const pk=primaryKey();
+    [...vis].sort((a,b)=>(b.k===pk)-(a.k===pk)).forEach(r=>{ const q=m.R[r.k]; if(x>q.end) return; const v=q.g(x);
+      g+=`<circle cx="${X(x)}" cy="${Y(v)}" r="${r.k===pk?4.5:3.5}" fill="var(${r.color})" stroke="var(--panel)" stroke-width="1.5"/>`;
+      const tag = Math.abs(x-q.px)<1/24 ? ' · peak' : (x>q.px ? ' · bear' : '');
+      items.push(`<span class="it"><span class="dot" style="background:var(${r.color})"></span>${r.short}${tag} <b${r.k===pk?' style="font-weight:600"':''}>${fmt$(v)}</b> <small>${pct(v/PRICE-1)}</small></span>`); });
+  }
+  layer.innerHTML=g;
+  document.getElementById('readout').innerHTML=`<span class="when">${monthName(dt)}</span>`+(items.join('')||'<span class="muted">No projection this far out for the selected lines.</span>');
+}
+function hoverEvt(e){ if(!CH) return; const svg=document.getElementById('chart'); const r=svg.getBoundingClientRect(); const px=(e.clientX-r.left)*(CH.W/r.width); const x=CH.x0+(px-CH.pad.l)/(CH.W-CH.pad.l-CH.pad.r)*(CH.x1-CH.x0); CH.lastX=x; showAt(x); }
+(()=>{ const svg=document.getElementById('chart'); svg.onpointermove=hoverEvt; svg.onpointerdown=hoverEvt; })();
+
+// ---------- render: track since the low ----------
+function renderTrack(){
+  document.getElementById('trackNote').textContent=`The thick line is this cycle since the ${toD(LOW.d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})} low.`;
+  const svg=document.getElementById('track');
+  const W=Math.max(560, svg.parentElement.clientWidth), Hh=300; svg.setAttribute('viewBox',`0 0 ${W} ${Hh}`); svg.setAttribute('width',W); svg.setAttribute('height',Hh);
+  const N=78, pad={l:52,r:96,t:14,b:30}, y0=Math.log(0.75), y1=Math.log(5);
+  const X=k=>pad.l+k/N*(W-pad.l-pad.r), Y=v=>pad.t+(1-(Math.log(v)-y0)/(y1-y0))*(Hh-pad.t-pad.b);
+  let s='';
+  [0.8,1,1.5,2,3,4,5].forEach(v=>{ s+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" ${v===1?'stroke-width="1.4"':''}/><text x="${pad.l-8}" y="${Y(v)+4}" text-anchor="end">${v===1?'low':pct(v-1)}</text>`; });
+  for(let k=0;k<=N;k+=13){ s+=`<text x="${X(k)}" y="${Hh-10}" text-anchor="middle">${k===0?'low':'wk '+k}</text>`; }
+  const ends=[];
+  REPLAYS.filter(r=>!r.inst && state.show[r.k]).forEach(r=>{ const b=weekOf(r.bot); const pts=[]; for(let k=0;k<=N;k++) pts.push([k,WALL[b+k]/r.botP]);
+    s+=`<path d="${pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(Math.min(5,Math.max(0.75,p[1]))).toFixed(1)).join(' ')}" fill="none" stroke="var(${r.color})" stroke-width="1.5"/>`;
+    ends.push({y:Y(Math.min(5,pts[N][1])),t:r.short,c:r.color}); });
+  const cur=[]; for(let k=0;k<=WEEKS_SINCE;k++) cur.push([k,WALL[LOW_W+k]/LOW.p]);
+  s+=`<line x1="${X(WEEKS_SINCE)}" x2="${X(WEEKS_SINCE)}" y1="${pad.t}" y2="${Hh-pad.b}" stroke="var(--btc)" stroke-dasharray="2 3"/>`;
+  s+=`<path d="${cur.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="var(--hist)" stroke-width="2.8"/><circle cx="${X(WEEKS_SINCE)}" cy="${Y(cur[cur.length-1][1])}" r="4" fill="var(--hist)"/><text x="${X(WEEKS_SINCE)+7}" y="${Y(cur[cur.length-1][1])+16}" style="fill:var(--hist)">Now ${pct(CUR_GAIN)}</text>`;
+  ends.sort((a,b)=>a.y-b.y); for(let i=1;i<ends.length;i++) if(ends[i].y-ends[i-1].y<13) ends[i].y=ends[i-1].y+13;
+  ends.forEach(e=>{ s+=`<text x="${W-pad.r+6}" y="${e.y+4}" style="fill:var(${e.c})">${e.t}</text>`; });
+  svg.innerHTML=s;
+}
+
+// ---------- render: match table ----------
+function bar(v){ return `<span class="meter"><i style="width:${Math.round(v*100)}%"></i></span> ${Math.round(v*100)}%`; }
+function renderMatch(){
+  const rows=RANKED.map((r,i)=>{ const x=r.match; return `<tr${i===0?' class="proj"':''}><td><span class="dot" style="background:var(${r.color})"></span>${r.name}<div class="muted sub">${r.sub}</div></td><td class="num"><b>${Math.round(x.overall*100)}%</b></td><td class="num">${bar(x.price)}</td><td class="num">${bar(x.sma)}</td><td class="num">${bar(x.shape)}</td><td class="num">${bar(x.depth)}<div class="muted sub">−${Math.round(x.prevDD*100)}% vs −${Math.round(CUR_DD*100)}%</div></td><td class="num">${bar(x.dur)}<div class="muted sub">${x.prevBearDays} d vs ${CUR_BEAR_DAYS} d</div></td><td class="num">${bar(x.rec)}<div class="muted sub">wk ${WEEKS_SINCE}: ${pct(x.gainThen)} vs ${pct(CUR_GAIN)}</div></td></tr>`; }).join('');
+  const pdd=RANKED.map(r=>r.match.prevDD), pbd=RANKED.map(r=>r.match.prevBearDays), pg=RANKED.map(r=>r.match.gainThen);
+  const facts=[
+    CUR_DD<Math.min(...pdd) ? `the shallowest bear on record (−${Math.round(CUR_DD*100)}%)` : `a −${Math.round(CUR_DD*100)}% bear (past: ${pdd.map(v=>'−'+Math.round(v*100)+'%').join(', ')})`,
+    CUR_BEAR_DAYS<Math.min(...pbd) ? `the shortest one (${CUR_BEAR_DAYS} days)` : `a ${CUR_BEAR_DAYS}-day bear (past: ${pbd.join(', ')} days)`,
+    CUR_GAIN<Math.min(...pg) ? 'the slowest rebound off a low' : 'a rebound inside the past range' ];
+  const inst=`<tr><td><span class="dot" style="background:var(--inst)"></span>Institutional cycle<div class="muted sub">hypothetical · no past path</div></td><td class="num">–</td><td colspan="6" style="text-align:left;white-space:normal" class="muted">No history to score. It fits a shallower, shorter bear and a slower rebound than past cycles. So far this cycle has had ${facts.join(', ')}.</td></tr>`;
+  document.getElementById('matchTable').innerHTML=`<thead><tr><th>Replay</th><th>Overall</th><th>Price path</th><th>Weekly SMA</th><th>Bear shape</th><th>Bear depth</th><th>Bear length</th><th>Rebound so far</th></tr></thead><tbody>${rows}${inst}</tbody>`;
+}
+
+// ---------- render: SMA fingerprint ----------
+function renderSma(){
+  const n=+state.sma, svg=document.getElementById('smaChart');
+  const W=Math.max(560, svg.parentElement.clientWidth), Hh=300; svg.setAttribute('viewBox',`0 0 ${W} ${Hh}`); svg.setAttribute('width',W); svg.setAttribute('height',Hh);
+  const K0=-60, K1=78, pad={l:52,r:96,t:14,b:30}; const lo=n===200?0.5:0.35, hi=n===200?3.5:2.0;
+  const y0=Math.log(lo), y1=Math.log(hi);
+  const X=k=>pad.l+(k-K0)/(K1-K0)*(W-pad.l-pad.r), Y=v=>pad.t+(1-(Math.log(Math.min(hi,Math.max(lo,v)))-y0)/(y1-y0))*(Hh-pad.t-pad.b);
+  let s=`<rect x="${pad.l}" y="${Y(1)}" width="${W-pad.l-pad.r}" height="${Hh-pad.b-Y(1)}" fill="var(--q4)"/>`;
+  (n===200?[0.5,0.7,1,1.5,2,3]:[0.4,0.6,0.8,1,1.25,1.6,2]).forEach(v=>{ s+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" ${v===1?'stroke-width="1.6" stroke="var(--muted)"':''}/><text x="${pad.l-8}" y="${Y(v)+4}" text-anchor="end">${v===1?n+'W':v+'×'}</text>`; });
+  for(let k=-52;k<=K1;k+=26) s+=`<text x="${X(k)}" y="${Hh-10}" text-anchor="middle">${k===0?'low':(k>0?'+':'')+k+'w'}</text>`;
+  s+=`<line x1="${X(0)}" x2="${X(0)}" y1="${pad.t}" y2="${Hh-pad.b}" stroke="var(--muted)" stroke-dasharray="2 4"/>`;
+  const ends=[];
+  RANKED.forEach(r=>{ if(!state.show[r.k]) return; const bi=r.fp.bi; const pts=[]; for(let k=K0;k<=K1;k++){ const i=bi+k; if(i<0||i>NOW_W) continue; pts.push([k,WALL[i]/smaW(n,i)]); }
+    s+=`<path d="${pts.map((p,j)=>(j?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="var(${r.color})" stroke-width="1.5"/>`;
+    ends.push({y:Y(pts[pts.length-1][1]),t:r.short,c:r.color}); });
+  const bi=CUR_FP.bi, cur=[]; for(let k=K0;k<=WEEKS_SINCE;k++) cur.push([k,WALL[bi+k]/smaW(n,bi+k)]);
+  s+=`<path d="${cur.map((p,j)=>(j?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')}" fill="none" stroke="var(--hist)" stroke-width="2.8"/>`;
+  const lastv=cur[cur.length-1][1]; s+=`<circle cx="${X(WEEKS_SINCE)}" cy="${Y(lastv)}" r="4" fill="var(--hist)"/><text x="${X(WEEKS_SINCE)+7}" y="${Y(lastv)-8}" style="fill:var(--hist)">Now ${lastv.toFixed(2)}×</text>`;
+  ends.sort((a,b)=>a.y-b.y); for(let i=1;i<ends.length;i++) if(ends[i].y-ends[i-1].y<13) ends[i].y=ends[i-1].y+13;
+  ends.forEach(e=>{ s+=`<text x="${W-pad.r+6}" y="${e.y+4}" style="fill:var(${e.c})">${e.t}</text>`; });
+  svg.innerHTML=s;
+  document.getElementById('smaNote').textContent = n===200
+    ? `The 200W SMA has been the floor of every bear. Weeks closed below it: ${RANKED.map(r=>r.short+' '+r.fp.below200).join(', ')}; this cycle ${CUR_FP.below200}. Shaded band = above the average.${RANKED.some(r=>r.fp.bi<199)?' Early lows have less than 200 weeks of history before them, so their 200W uses the weeks available (data starts '+monthName(toD(W0))+').':''}`
+    : n===50 ? `Losing the 50W marked each bear; reclaiming it marked each new bull. 2026 lost it ${CUR_FP.lose50} weeks after the top and ${CUR_FP.r50==null?'has not won it back yet':'won it back '+CUR_FP.r50+' weeks after the low'}. Shaded band = above the average.`
+    : 'The 20W tracks the medium-term trend. A close back above it after the low has been the first recovery signal in every cycle. Shaded band = above the average.';
+  const wk=v=> v==null?'<span class="muted">not yet</span>':v+' wk';
+  const cols=[...RANKED.map(r=>({h:r.short,c:r.color,fp:r.fp,score:r.smaScore})),{h:'2026 (now)',c:'--hist',fp:CUR_FP,now:true}];
+  const row=(lab,fn)=>`<tr><td>${lab}</td>${cols.map(c=>`<td class="num"${c.now?' style="font-weight:600"':''}>${fn(c.fp)}</td>`).join('')}</tr>`;
+  document.getElementById('smaTable').innerHTML=`<thead><tr><th>Weekly SMA event</th>${cols.map(c=>`<th><span class="dot" style="background:var(${c.c})"></span>${c.h}</th>`).join('')}</tr></thead><tbody>
+    ${row('Bear low vs 200W SMA',f=>f.lowVs200.toFixed(2)+'×')}
+    ${row('Weeks closed below 200W',f=>f.below200)}
+    ${row('Top → first close below 50W',f=>wk(f.lose50))}
+    ${row('Top → 20W crosses under 50W',f=>wk(f.death))}
+    ${row('Low → first close above 20W',f=>wk(f.r20))}
+    ${row('Low → first close above 50W',f=>wk(f.r50))}
+    ${row('Low → 20W crosses above 50W',f=>wk(f.gc))}
+    ${row('Low → first close above 100W',f=>wk(f.r100))}
+    <tr class="proj"><td><b>Weekly SMA match</b></td>${cols.map(c=>`<td class="num"><b>${c.now?'–':Math.round(c.score*100)+'%'}</b></td>`).join('')}</tr></tbody>`;
+  const p=WALL[NOW_W], s20=smaW(20,NOW_W), s50=smaW(50,NOW_W), s100=smaW(100,NOW_W), s200=smaW(200,NOW_W);
+  const line=(l,v)=>`<p><span class="pill ${p>v?'good':'bad'}">${p>v?'Above':'Below'}</span> ${l} <b class="mono">${fmt$(v)}</b> <span class="muted">(${pct(p/v-1)})</span></p>`;
+  document.getElementById('smaNow').innerHTML=line('20W SMA',s20)+line('50W SMA',s50)+line('100W SMA',s100)+line('200W SMA',s200)+`<p class="muted">Weekly close ${fmt$(p)}. 20W is ${s20<s50?'still below':'above'} the 50W.</p>`;
+  const gcs=RANKED.map(r=>`${r.short} wk ${r.fp.gc}`).join(', '), r100s=RANKED.map(r=>`${r.short} wk ${r.fp.r100}`).join(', ');
+  document.getElementById('smaNext').innerHTML=`
+    ${CUR_FP.gc==null ? `<p><span class="pill good">Bullish</span> <b>20W crosses above 50W.</b> The gap is ${pct(s20/s50-1)} today; it needs price to hold above about ${fmtK(s50)}. Past cycles crossed at ${gcs} after the low (now wk ${WEEKS_SINCE}).</p>` : `<p><span class="pill good">Done</span> <b>20W crossed above the 50W</b> ${CUR_FP.gc} weeks after the low (past cycles: ${gcs}). ${s20>s50?'It is still above.':'It has since slipped back under the 50W.'}</p>`}
+    <p><span class="pill good">Bullish</span> <b>Weekly close above the 100W at ${fmtK(s100)}.</b> Past cycles first did it at ${r100s}. For reference, the recent high is ${fmtK(SEP_HIGH)}.</p>
+    ${p>s50 ? `<p><span class="pill warn">Caution</span> <b>Weekly close back below the 50W at ${fmtK(s50)}.</b> That would undo the 50W reclaim and favour the retest case.</p>` : `<p><span class="pill warn">Caution</span> <b>Price is under the 50W at ${fmtK(s50)}</b> (${pct(p/s50-1)}). A weekly close back above it is needed before the 20W/50W cross can happen.</p>`}
+    ${p>s200 ? `<p><span class="pill bad">Breaks</span> <b>Weekly close below the 200W at ${fmtK(s200)}.</b> That would mean a longer stay below the long-term floor than the replays assume.</p>` : `<p><span class="pill bad">Floor</span> <b>Price is under the 200W at ${fmtK(s200)}</b> (${pct(p/s200-1)}, ${CUR_FP.below200} weekly closes below it this cycle). Past bulls only got going once price held above it; a weekly close back above is the big repair signal.</p>`}`;
+}
+
+// ---------- render: simple price outlook ----------
+function renderWeekCheck(m){
+  const pk=primaryKey(), q=m.R[pk];
+  const wkStart=new Date(toD(W0).getTime()+NOW_W*7*DAY), wkEnd=new Date(wkStart.getTime()+7*DAY);
+  const rets=[]; for(let i=NOW_W-26;i<NOW_W;i++) rets.push(Math.log(WALL[i]/WALL[i-1]));
+  const mu=rets.reduce((s,v)=>s+v,0)/rets.length, sig=Math.sqrt(rets.reduce((s,v)=>s+(v-mu)**2,0)/(rets.length-1));
+  const exp=q.g(yf(wkEnd)), lo=exp*Math.exp(-sig), hi=exp*Math.exp(sig);
+  const lastC=WALL[NOW_W-1], prevC=WALL[NOW_W-2], path=q.f(yf(wkStart)), drift=Math.log(lastC/path);
+  const [st,cls]= Math.abs(drift)<=2*sig ? ['on track','good'] : drift>0 ? ['ahead of the path','warn'] : ['behind the path','bad'];
+  const d=dt=>dt.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',timeZone:'Australia/Sydney'});
+  // next weekly SMA trigger
+  const s20=smaW(20,NOW_W), s50=smaW(50,NOW_W), s100=smaW(100,NOW_W);
+  const ref = q.r.fp ? q.r : BEST;
+  let trig;
+  if(CUR_FP.gc==null){ const due=ref.fp.gc!=null? ref.fp.gc-WEEKS_SINCE : null;
+    trig=`20W/50W golden cross (gap ${pct(s20/s50-1)}); ${ref.short} crossed at week ${ref.fp.gc} after its low${due!=null? (due>0?`, about ${due} week${due===1?'':'s'} from now`:', so it is overdue') : ''}.`; }
+  else if(WALL[NOW_W]<s100) trig=`weekly close above the 100W SMA at <b>${fmt$(s100)}</b> (${pct(s100/WALL[NOW_W]-1)} away).`;
+  else trig=`hold weekly closes above the 50W SMA at <b>${fmt$(s50)}</b>.`;
+  document.getElementById('weekCheck').innerHTML=`
+    <span class="h">This week</span>
+    <span>Expected weekly close ~<b>${fmtK(exp)}</b>, likely <b>${fmtK(lo)} – ${fmtK(hi)}</b> <span class="muted">(week closes ${d(wkEnd)} 11am · band = one typical weekly move, ±${(sig*100).toFixed(1)}% over the last 26 weeks)</span></span>
+    <span>Last week closed <b>${fmt$(lastC)}</b> <span class="${lastC>=prevC?'up':'dn'}">${pct(lastC/prevC-1)}</span>: <span class="pill ${cls}">${st}</span> <span class="muted">${pct(lastC/path-1)} vs the ${q.r.short} path (on track = within two typical weekly moves)</span></span>
+    <span>Next SMA trigger: ${trig}</span>`;
+}
+function renderOutlook(m){
+  renderWeekCheck(m);
+  const pk=primaryKey(), q=m.R[pk], hist=REPLAYS.filter(r=>!r.inst).map(r=>r.k);
+  const rng=x=>{ const v=hist.map(k=>m.R[k].g(x)); v.push(q.g(x)); return [Math.min(...v),Math.max(...v)]; };
+  const end=Math.min(q.end, yf(new Date(Date.UTC(2030,11,31))))+0.01;
+  let rows=[];
+  if(state.outlook==='m'){
+    for(let y=2026;y<=2030;y++) for(let mo=1;mo<=12;mo++){ const dt=new Date(Date.UTC(y,mo,0)); if(dt<=NOW) continue; const x=yf(dt); if(x>end) break;
+      const e=q.g(x), [lo,hi]=rng(x), [ph,cls]=phaseFor(x,q,e);
+      rows.push(`<tr${mo===12?' class="proj"':''}><td class="num">${dt.toLocaleString('en-AU',{month:'short',year:'numeric',timeZone:'UTC'})}</td><td class="num"><b>${fmtK(e)}</b></td><td class="num">${fmtK(lo)}</td><td class="num">${fmtK(hi)}</td><td class="num ${e>=PRICE?'up':'dn'}">${pct(e/PRICE-1)}</td><td><span class="pill ${cls}">${ph}</span></td></tr>`); }
+    document.getElementById('outlook').innerHTML=`<thead><tr><th>Month end</th><th>Expected</th><th>Low</th><th>High</th><th>vs today</th><th>Phase</th></tr></thead><tbody>${rows.join('')}</tbody>`;
+  } else {
+    for(let y=2026;y<=2030;y++) for(let n=1;n<=4;n++){ const s=new Date(Date.UTC(y,(n-1)*3,1)), e=new Date(Date.UTC(y,n*3,0)); if(e<=NOW) continue; const xe=yf(e); if(yf(s)>end) break;
+      let best=0, bestX=xe; for(let x=Math.max(yf(s),m.nx);x<=xe;x+=1/104){ const v=q.g(x); if(v>best){best=v;bestX=x;} }
+      const v=q.g(xe), [lo,hi]=rng(xe), [ph,cls]=phaseFor(xe,q,v);
+      const peakHere = q.px>=yf(s) && q.px<=xe;
+      best=Math.max(best, v, peakHere? q.P : 0);
+      rows.push(`<tr${peakHere?' class="proj"':''}><td class="num">Q${n} ${y}</td><td class="num"><b>${fmtK(v)}</b></td><td class="num">${fmtK(best)}${peakHere?' <span class="muted">cycle top</span>':''}</td><td class="num">${fmtK(lo)} – ${fmtK(hi)}</td><td class="num ${v>=PRICE?'up':'dn'}">${pct(v/PRICE-1)}</td><td><span class="pill ${cls}">${ph}</span></td></tr>`); }
+    document.getElementById('outlook').innerHTML=`<thead><tr><th>Quarter</th><th>Expected at quarter end</th><th>Expected high in quarter</th><th>Range at quarter end</th><th>vs today</th><th>Phase</th></tr></thead><tbody>${rows.join('')}</tbody>`;
+  }
+  document.getElementById('outlookNote').textContent=`If ${A.name} keeps following the ${q.r.name}${state.follow==='auto'?' (the closest match so far)':''}: expected top about ${fmtK(q.P)} around ${monthName(q.peakDt)}, then a bear market to about ${fmtK(q.low)} by ${monthName(q.lowDt)}. Today: ${fmt$(PRICE)}. Change the cycle with "Follow this cycle" further down.`;
+}
+
+// ---------- render: replay targets ----------
+function renderScen(m){
+  const rows=REPLAYS.map(r=>{ const q=m.R[r.k]; return `<tr${r.k===primaryKey()?' class="proj"':''}><td><span class="dot" style="background:var(${r.color})"></span>${r.name}</td><td class="num">${fmt$(q.P)}</td><td class="num">${monthName(q.peakDt)}</td><td class="num">${pct(q.P/PRICE-1)}</td><td class="num">${(q.P/m.bot.p).toFixed(1)}×</td><td class="num">${r.inst?'–':(q.athBeforeHalving?'<span class="up">Yes</span>':'No')}</td><td class="num">−${Math.round(q.dd*100)}% → ${fmtK(q.low)} · ${monthName(q.lowDt)}</td></tr>`; }).join('');
+  document.getElementById('scenTable').innerHTML=`<thead><tr><th>Replay</th><th>Peak</th><th>Peak month</th><th>From today</th><th>× bottom</th><th>ATH before halving</th><th>Next bear low</th></tr></thead><tbody>${rows}</tbody>`;
+  document.getElementById('scenNotes').innerHTML=`<p>Diminishing-returns range for this cycle: new highs shrinking at the top-to-top rate give about <b>${fmtK(m.decayBear)}</b> (${NEXT_T2T_MULT.toFixed(2)}× the ${toD(ATH.d).getUTCFullYear()} high), and runs off the bottom shrinking at their rate give about <b>${fmtK(m.decayBull)}</b> (${NEXT_BULL_MULT.toFixed(1)}× the low). Scaled replays use the midpoint, ${fmtK(m.base)}${m.base<ATH.p?`, which is <b>below the ${fmtK(ATH.p)} high</b>`:''}. Bear-market drawdowns have gone ${CYC.map(c=>'−'+Math.round(c.dd*100)+'%').join(' → ')}, so scaled replays model the next bear at about −${Math.round(m.baseDD*100)}%.</p>${A.scenExtra}`;
+}
+
+// ---------- render: clocks ----------
+function renderClocks(m){
+  const c=[
+    ['early','Bottom + bull length', `${monthName(toD(m.bot.d))} + ${avgBull} days`, m.clocks.early],
+    ['halv',A.halvLabel+' + post-halving run', `est. Apr 2028 + ${avgH2T} days`, m.clocks.halv],
+    ['t2t','Top-to-top gap', `${monthName(toD(ATH.d))} + ${avgT2T} days`, m.clocks.t2t],
+    ['late','Late Q4 seasonal', A.lateNote, m.clocks.late],
+  ];
+  { const hb=document.querySelector('#segPeak [data-k="halv"]'); if(hb) hb.textContent='Halving clock · '+monthName(m.clocks.halv); }
+  document.getElementById('clocks').innerHTML=c.map(([k,h,sub,d])=>`<div class="clock ${state.peak===k?'on':''}"><span class="eyebrow">${h}</span><span class="d">${monthName(d)}</span><span class="muted" style="font-size:13px">${sub}</span></div>`).join('');
+}
+
+// ---------- render: roadmap ----------
+function phaseFor(x,q,b){
+  const hx=q.hx??yf(toD(HALVING_2028)), px=q.px;
+  if(state.bottom==='retest' && x<yf(toD('2027-01-01'))) return ['Retest / final bear leg','bad'];
+  if(x<hx && b>ATH.p) return ['New ATH before halving','good'];
+  if(x>px && x<=px+0.25) return ['Peak, then bear begins','warn'];
+  if(x>px) return x>px+q.bearLen-0.2? ['Bear bottoming','bad'] : ['Bear market','bad'];
+  if(x>=px-0.3) return ['Peak window','warn'];
+  if(Math.abs(x-hx)<0.15) return ['Halving quarter','good'];
+  if(x>hx) return ['Post-halving expansion','good'];
+  if(x>hx-0.75) return ['Pre-halving run-up','good'];
+  return ['Early bull · base building','good'];
+}
+function renderRoadmap(m){
+  const pk=primaryKey(), q=m.R[pk], vis=REPLAYS.filter(r=>state.show[r.k]);
+  const last=Math.max(...vis.map(r=>m.R[r.k].end), q.end);
+  const qs=[]; for(let y=2026;y<=2031;y++) for(let n=1;n<=4;n++){ const dt=new Date(Date.UTC(y,n*3,0)); if(dt>NOW && yf(dt)<=last+0.05) qs.push([y,n,dt]); }
+  const rows=qs.map(([y,n,dt])=>{ const x=yf(dt); const b=q.g(x); const [ph,cls]=phaseFor(x,q,b);
+    return `<tr${n===4?' class="proj"':''}><td class="num">Q${n} ${y}</td><td><span class="pill ${cls}">${ph}</span></td>${vis.map(r=>{ const v=m.R[r.k].g(x); return `<td class="num"${r.k===pk?' style="font-weight:600"':''}>${fmtK(v)}</td>`; }).join('')}</tr>`; }).join('');
+  document.getElementById('roadmapNote').textContent=`Following the ${q.r.short} replay${state.follow==='auto'?' (auto: closest match)':''}. Phase labels come from it. Values are each replay's model price at quarter end.`;
+  document.getElementById('roadmap').innerHTML=`<thead><tr><th>Quarter end</th><th>Phase</th>${vis.map(r=>`<th><span class="dot" style="background:var(${r.color})"></span>${r.short}</th>`).join('')}</tr></thead><tbody>${rows}</tbody>`;
+}
+
+// ---------- render: cycles table ----------
+function renderCycles(m){
+  const d=s=>toD(s).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+  const q=m.R[primaryKey()];
+  let rows=CYC.map(c=>`<tr><td>${c.name}</td><td class="num">${d(c.halv)}</td><td class="num">${d(c.top)}</td><td class="num">${fmt$(c.topP)}</td><td class="num">${c.h2t}</td><td class="num">${c.bullDays?c.bullDays:'–'}</td><td class="num">${c.bullMult?c.bullMult.toFixed(1)+'×':'–'}</td><td class="num">${d(c.bot)}</td><td class="num">${fmt$(c.botP)}</td><td class="num">−${Math.round(c.dd*100)}%</td><td class="num">${c.bearDays}</td></tr>`).join('');
+  rows+=`<tr class="proj"><td>${A.nextName} (${q.r.short} replay)</td><td class="num">~Apr 2028</td><td class="num">${monthName(q.peakDt)}</td><td class="num">${fmt$(q.P)}</td><td class="num">${days(HALVING_2028,q.peakDt.toISOString().slice(0,10))}</td><td class="num">${days(m.bot.d,q.peakDt.toISOString().slice(0,10))}</td><td class="num">${(q.P/m.bot.p).toFixed(1)}×</td><td class="num">${monthName(q.lowDt)}</td><td class="num">${fmtK(q.low)}</td><td class="num">−${Math.round(q.dd*100)}%</td><td class="num">${Math.round(q.bearLen*365)}</td></tr>`;
+  document.getElementById('cycles').innerHTML=`<thead><tr><th>Cycle</th><th>${A.halvLabel}</th><th>Top</th><th>Top price</th><th>Halving→top (d)</th><th>Bull length (d)</th><th>Bottom→top</th><th>Bear low</th><th>Low price</th><th>Drawdown</th><th>Top→low (d)</th></tr></thead><tbody>${rows}</tbody>`;
+}
+
+// ---------- render: calendar ----------
+function annual(){ const r={...A.annual}; for(let y=2018;y<=2026;y++){ const s=M.find(z=>z.y===y-1&&z.m===12)?.c; const e = y===2026? PRICE : M.find(z=>z.y===y&&z.m===12)?.c; if(s&&e) r[y]=e/s-1; } return r; }
+function renderYears(m){
+  const a=annual(), q=m.R[primaryKey()];
+  const yr=y=>{ const s=q.g(yf(new Date(Date.UTC(y-1,11,31)))), e=q.g(yf(new Date(Date.UTC(y,11,31)))); return e/s-1; };
+  const cell=(v,proj)=> v==null?'<td class="cell muted">–</td>':`<td class="cell ${v>=0?'up':'dn'}">${pct(v)}${proj?' <span class="muted">(model)</span>':''}</td>`;
+  const rows=[['2014–2017',[2014,2015,2016,2017]],['2018–2021',[2018,2019,2020,2021]],['2022–2025',[2022,2023,2024,2025]]].map(([n,ys])=>`<tr><td>${n}</td>${ys.map(y=>cell(a[y])).join('')}</tr>`).join('');
+  const r4=`<tr class="proj"><td>2026–2029 <span class="muted">(${q.r.short})</span></td><td class="cell ${a[2026]>=0?'up':'dn'}">${pct(a[2026])} <span class="muted">YTD</span></td>${cell(yr(2027),1)}${cell(yr(2028),1)}${cell(yr(2029),1)}</tr>`;
+  document.getElementById('years').innerHTML=`<thead><tr><th>Cycle</th><th>Bear year</th><th>Recovery year</th><th>Halving year</th><th>Top year</th></tr></thead><tbody>${rows}${r4}</tbody>`;
+  const qret={1:[],2:[],3:[],4:[]};
+  for(let y=2018;y<=2026;y++) for(let n=1;n<=4;n++){ const sm=n===1? M.find(z=>z.y===y-1&&z.m===12) : M.find(z=>z.y===y&&z.m===(n-1)*3); const em=M.find(z=>z.y===y&&z.m===n*3); if(sm&&em) qret[n].push([y,em.c/sm.c-1]); }
+  const med=a=>{const s=[...a].sort((x,y)=>x-y);return s.length%2?s[(s.length-1)/2]:(s[s.length/2-1]+s[s.length/2])/2;};
+  const qrows=[1,2,3,4].map(n=>{ const v=qret[n].map(z=>z[1]); const up=v.filter(z=>z>0).length; return `<tr><td>Q${n}</td><td class="num">${pct(v.reduce((s,z)=>s+z,0)/v.length)}</td><td class="num">${pct(med(v))}</td><td class="num">${up}/${v.length}</td><td class="num" style="white-space:normal;text-align:left">${qret[n].map(([y,r])=>`<span class="${r>=0?'up':'dn'}">${String(y).slice(2)}: ${pct(r)}</span>`).join(' · ')}</td></tr>`; }).join('');
+  document.getElementById('quarters').innerHTML=`<thead><tr><th>Quarter</th><th>Average</th><th>Median</th><th>Up years</th><th style="text-align:left">By year (2018–2026)</th></tr></thead><tbody>${qrows}</tbody>`;
+}
+
+// ---------- render: timeframes ----------
+function ema(a,n){ const k=2/(n+1); let e=a.slice(0,n).reduce((s,x)=>s+x,0)/n; for(let i=n;i<a.length;i++) e=a[i]*k+e*(1-k); return e; }
+function sma(a,n){ return a.slice(-n).reduce((s,x)=>s+x,0)/n; }
+function rsi(a,n=14){ let g=0,l=0; for(let i=1;i<=n;i++){const c=a[i]-a[i-1]; g+=Math.max(c,0); l+=Math.max(-c,0);} g/=n; l/=n; for(let i=n+1;i<a.length;i++){const c=a[i]-a[i-1]; g=(g*(n-1)+Math.max(c,0))/n; l=(l*(n-1)+Math.max(-c,0))/n;} return 100-100/(1+g/l); }
+function renderTF(){
+  const tfs=[
+    {k:'1W', a:W_C, f:['EMA 21',ema(W_C,21)], s:['SMA 50',sma(W_C,50)]},
+    {k:'1D', a:D_C, f:['EMA 50',ema(D_C,50)], s:['EMA 200',ema(D_C,200)]},
+    {k:'4H', a:H4_C, f:['EMA 50',ema(H4_C,50)], s:['EMA 200',ema(H4_C,200)]},
+  ];
+  document.getElementById('tf').innerHTML=tfs.map(t=>{
+    const p=t.a[t.a.length-1], r=rsi(t.a), aF=p>t.f[1], aS=p>t.s[1], fs=t.f[1]>t.s[1];
+    const score=(aF?1:-1)+(aS?1:-1)+(fs?1:-1)+(r>55?1:r<45?-1:0);
+    const [lab,cls]= score>=3?['Bullish','good'] : score<=-3?['Bearish','bad'] : score>0?['Leaning bullish','good'] : score<0?['Leaning bearish','bad'] : ['Neutral','warn'];
+    return `<div class="tfc"><div class="row"><h3>${t.k}</h3><span class="pill ${cls}">${lab}</span></div>
+      <div class="row"><span class="muted">Close</span><span>${fmt$(p)}</span></div>
+      <div class="row"><span class="muted">${t.f[0]}</span><span>${fmt$(t.f[1])} ${aF?'▲':'▼'}</span></div>
+      <div class="row"><span class="muted">${t.s[0]}</span><span>${fmt$(t.s[1])} ${aS?'▲':'▼'}</span></div>
+      <div class="row"><span class="muted">RSI 14</span><span>${r.toFixed(1)}</span></div></div>`;
+  }).join('');
+}
+function bottomWindow(){
+  const bd=CYC.slice(0,-1).map(c=>c.bearDays), mn=Math.min(...bd), mx=Math.max(...bd);
+  const w1=addDays(ATH.d,mn), w2=addDays(ATH.d,mx), lw=toD(LOW.d);
+  const f=dt=>dt.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+  const tail = lw>=w1 && lw<=w2 ? `The current low (${f(lw)}) fell inside it.` : lw<w1 ? (w2>NOW ? 'The current low came earlier, so a late flush inside the window would still fit history.' : 'The current low came earlier than the window and has held through it.') : `The current low (${f(lw)}) came after it.`;
+  return `The time-based bottom window from past bears (${mn}–${mx} days after the top) ${w2<NOW?'ran':'runs'} <b>${f(w1)} – ${f(w2)}</b>. ${tail}`;
+}
+function renderHeader(){
+  document.getElementById('h1').textContent=`Where this ${A.name} bull could go, and when it ends`;
+  const names=REPLAYS.filter(r=>!r.inst).map(r=>r.k==='r22'?'the last cycle (2022–25)':r.short);
+  document.getElementById('lede').textContent=`Pick which past cycle ${A.name} replays: ${names.join(', ')}, or a new institution-driven cycle. The page scores how closely 2026 has tracked each one so far and projects each to the next bear market.`;
+  document.querySelectorAll('#segAsset button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===A.key));
+  document.getElementById('bIn').textContent='Already in · '+monthName(toD(LOW.d));
+  const ip=document.getElementById('retestPx'); ip.min=A.retest.min; ip.max=A.retest.max; ip.step=A.retest.step;
+  document.getElementById('cyclesNote').textContent=A.cyclesNote;
+  document.getElementById('howTiming').innerHTML=`<b>Timing.</b> Peak date comes from three clocks: cycle bottom + average bull length (${avgBull} days), the next Bitcoin halving (estimated mid-April 2028) + average halving-to-top run (${avgH2T} days), and the ${monthName(toD(ATH.d))} top + average top-to-top gap (${avgT2T} days).`;
+  document.getElementById('howLimits').innerHTML=A.limits;
+  document.getElementById('howData').innerHTML=A.dataNote;
+}
+function renderChecks(){
+  const items=[
+    ['good','Confirms', `Weekly close above <b class="mono">${fmt$(SEP_HIGH)}</b> (${LEVELS.hi.m} high). That makes a higher high off the cycle low and the bull structure official.`],
+    OCT_LOW>SEP_LOW ? ['good','Confirms', `Higher lows hold: <b class="mono">${fmt$(OCT_LOW)}</b> (${LEVELS.lo30.m} low), then <b class="mono">${fmt$(SEP_LOW)}</b> (${LEVELS.lo90.m} low).`]
+      : ['warn','Caution', `Lower low printed: <b class="mono">${fmt$(OCT_LOW)}</b> (${LEVELS.lo30.m}) is under <b class="mono">${fmt$(SEP_LOW)}</b> (${LEVELS.lo90.m}). A weekly close back above ${fmt$(SEP_LOW)} would repair the higher-low structure.`],
+    ['good','Last-cycle tell', A.tell(ATH)],
+    PRICE>ema(D_C,200) ? ['warn','Caution', `Daily close back below the 200-day EMA (about <b class="mono">${fmt$(ema(D_C,200))}</b>) puts the retest case back in play.`]
+      : ['warn','Caution', `Price is under the 200-day EMA (about <b class="mono">${fmt$(ema(D_C,200))}</b>). Daily closes back above it are needed to keep the retest case off the table.`],
+    ['warn','Caution', bottomWindow()],
+    ['bad','Breaks', `Loss of <b class="mono">${fmt$(LOW.p)}</b> (the cycle low) invalidates "bottom is in" and points to a longer, deeper bear than any replay assumes.`],
+  ];
+  document.getElementById('checks').innerHTML=items.map(([c,l,t])=>`<li><span class="pill ${c}">${l}</span><span>${t}</span></li>`).join('');
+}
+
+// ---------- controls ----------
+function renderChips(){
+  document.getElementById('chips').innerHTML=REPLAYS.map(r=>`<button type="button" class="chip" data-k="${r.k}" aria-pressed="${state.show[r.k]}"><i style="background:var(${r.color})"></i>${r.name}${r.inst?'':` · ${Math.round(r.match.overall*100)}%`}</button>`).join('')+`<span class="chip" style="cursor:default" aria-hidden="true"><i style="background:var(--hist)"></i>Actual</span>`;
+}
+function syncControls(){
+  document.getElementById('bIn').setAttribute('aria-pressed',state.bottom==='in');
+  document.getElementById('bRetest').setAttribute('aria-pressed',state.bottom==='retest');
+  document.getElementById('retestCtl').hidden = state.bottom!=='retest';
+  document.getElementById('retestPx').value=state['retest_'+A.key];
+  document.getElementById('segFollow').innerHTML=`<button type="button" data-k="auto">Auto · closest match</button>`+REPLAYS.map(r=>`<button type="button" data-k="${r.k}">${r.follow}</button>`).join('');
+  if(state.follow!=='auto' && !KEYS.includes(state.follow)) state.follow='auto';
+  document.querySelectorAll('#segPeak button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===state.peak));
+  document.querySelectorAll('#segFollow button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===state.follow));
+  document.querySelectorAll('#segSma button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===state.sma));
+  document.querySelectorAll('#segOutlook button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===state.outlook));
+  document.querySelectorAll('#segSize button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===state.size));
+}
+function renderAll(){ if(CH) CH.lastX=null; syncControls(); renderChips(); const m=model(); renderStrip(m); renderOutlook(m); renderChart(m); renderTrack(); renderMatch(); renderSma(); renderScen(m); renderClocks(m); renderRoadmap(m); renderCycles(m); renderYears(m); }
+document.getElementById('bIn').onclick=()=>{state.bottom='in';save();renderAll();};
+document.getElementById('bRetest').onclick=()=>{state.bottom='retest';save();renderAll();};
+document.getElementById('retestPx').onchange=(e=>{ const v=+e.target.value; if(v>=A.retest.min&&v<=A.retest.max){state['retest_'+A.key]=v;save();renderAll();} });
+document.getElementById('segPeak').onclick=(e=>{ const b=e.target.closest('button'); if(!b) return; state.peak=b.dataset.k; save(); renderAll(); });
+document.getElementById('segFollow').onclick=(e=>{ const b=e.target.closest('button'); if(!b) return; state.follow=b.dataset.k; if(b.dataset.k!=='auto') state.show[b.dataset.k]=true; save(); renderAll(); });
+document.getElementById('segSma').onclick=(e=>{ const b=e.target.closest('button'); if(!b) return; state.sma=b.dataset.k; save(); renderAll(); });
+document.getElementById('segOutlook').onclick=(e=>{ const b=e.target.closest('button'); if(!b) return; state.outlook=b.dataset.k; save(); renderAll(); });
+document.getElementById('segSize').onclick=(e=>{ const b=e.target.closest('button'); if(!b) return; state.size=b.dataset.k; save(); renderAll(); });
+document.getElementById('chips').onclick=(e=>{ const b=e.target.closest('button'); if(!b) return; state.show[b.dataset.k]=!state.show[b.dataset.k]; save(); renderAll(); });
+let rt; window.onresize=(()=>{clearTimeout(rt); rt=setTimeout(()=>{renderChart(model()); renderTrack(); renderSma();},120);});
+renderTF(); renderChecks(); renderAll(); renderHeader();
+}
+loadAsset(initialAsset());
+boot();
+
+// ---------- manual refresh from TradingView (Breakout Radar pattern) ----------
+const TV_SERVERS=['Trading View','Trading_View']; let TV_SERVER=null, MCP=null, DB=null;
+const TV_MSG={needs_reauth:'Reconnect TradingView in claude.ai Settings, Connectors.',server_not_connected:'Add the TradingView connector in claude.ai Settings, Connectors.',approval_required:'Approval is needed. Press Refresh again and allow it.',not_in_manifest:'Access to TradingView was not allowed for this page.',selection_required:'Choose which TradingView connector to use, then try again.'};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const isoDay=t=>new Date(t*1000).toISOString().slice(0,10);
+const monLabel=t=>new Date(t*1000).toLocaleString('en-AU',{month:'short',year:'numeric',timeZone:'UTC'});
+function setStatus(t,kind){ const el=document.getElementById('refreshStatus'); el.textContent=t; el.className='rstatus '+(kind||''); }
+function showAsOf(){ const el=document.getElementById('asof'); if(el) el.textContent=`Cycle ${A.cycleNo} · ${A.pair} · data as of ${DATA_AT.toLocaleString('en-AU',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'})} · ${DATA_SRC}`; }
+
+async function tvBars(symbol,interval,count){
+  let last=null;
+  for(let i=0;i<TV_SERVERS.length;i++){
+    const name=TV_SERVER||TV_SERVERS[i];
+    try{
+      const res=await MCP.callTool(name,'mcp-tv-get-ohlcv',{symbol,interval,count,format:'columns'},{cache:false});
+      TV_SERVER=name;
+      let p=res.payload; if(typeof p==='string'){ try{p=JSON.parse(p)}catch(e){} }
+      if(!p||p.success===false||!p.bars||!Array.isArray(p.bars.t)||p.bars.t.length<30) throw {code:'tool_error',message:(p&&(p.error||p.message))||'TradingView returned no bars'};
+      return p.bars;
+    }catch(e){ last=e; if(!TV_SERVER&&['server_not_connected','not_in_manifest','server_not_found'].includes(e&&e.code)&&i<TV_SERVERS.length-1) continue; break; }
+  }
+  throw last;
+}
+
+// Build a snapshot in the same shape as the embedded data
+function buildSnapshot(b,cfg){
+  const W=b.w, Mo=b.m, D=b.d, H=b.h4, f=10**cfg.dp;
+  const r0=v=>Math.round(v*f)/f;
+  const mRows=[]; for(let i=0;i<Mo.t.length;i++){ const d=isoDay(Mo.t[i]); if(d<'2017-08-01') continue; mRows.push([d.slice(0,7)+'-01',r0(Mo.o[i]),r0(Mo.h[i]),r0(Mo.l[i]),r0(Mo.c[i])].join(',')); }
+  const wStart=W.t.findIndex(t=>isoDay(t)>='2017-08-14'); if(wStart<0||isoDay(W.t[wStart])!=='2017-08-14') throw {code:'shape',message:'Weekly bars did not line up with the history (expected a week starting 14 Aug 2017).'};
+  const wkC=W.c.slice(wStart).map(r0);
+  const price=r0(H.c[H.c.length-1]);
+  // ATH and cycle low
+  let ath={...cfg.baseATH};
+  for(let i=wStart;i<W.t.length;i++) if(W.h[i]>ath.p*(1+1e-9)) ath={d:isoDay(W.t[i]),p:r0(W.h[i])};
+  const athW=Math.max(wStart, W.t.findIndex(t=>isoDay(t)>=ath.d)-1);
+  let lowI=-1; for(let i=athW+1;i<W.t.length;i++) if(isoDay(W.t[i])>=ath.d.slice(0,8)+'01' && (lowI<0||W.l[i]<W.l[lowI])) lowI=i;
+  let low={d:isoDay(W.t[lowI]),p:r0(W.l[lowI])};
+  const dl=D.t.findIndex((t,i)=>Math.abs(D.l[i]/W.l[lowI]-1)<1e-9); if(dl>=0) low.d=isoDay(D.t[dl]);
+  // levels: highest high in 90 days, lowest low in last 30 days and in the 30 days before that
+  const n=D.t.length, pick=(from,to,fn)=>{ let k=-1; for(let i=Math.max(0,n-from);i<n-to;i++) if(k<0||fn(i,k)) k=i; return k; };
+  const hi=pick(90,0,(i,k)=>D.h[i]>D.h[k]), l30=pick(30,0,(i,k)=>D.l[i]<D.l[k]), l60=pick(60,30,(i,k)=>D.l[i]<D.l[k]);
+  return {
+    at: Date.now(), src:'TradingView '+cfg.tv, price,
+    M_RAW: mRows.join(';'), WK_BN: wkC.join(','), W_C: wkC.slice(-60),
+    D_C: D.c.slice(-300).map(r0), H4_C: H.c.slice(-300).map(r0),
+    ATH: ath, LOW: low,
+    LEVELS: { hi:{p:r0(D.h[hi]),m:monLabel(D.t[hi])}, lo30:{p:r0(D.l[l30]),m:monLabel(D.t[l30])}, lo90:{p:r0(D.l[l60]),m:monLabel(D.t[l60])} },
+  };
+}
+function applySnapshot(s,key){ ASSETS[key].data=s; if(key===AK) loadAsset(key); }
+
+async function refreshFromTV(){
+  const btn=document.getElementById('refreshBtn'), key=AK, cfg=ASSETS[key];
+  if(!MCP){ try{ MCP=await claude.use('mcp'); }catch(e){ MCP=null; } }
+  if(!MCP){ setStatus('TradingView is not available in this view. Open the page on claude.ai with the TradingView connector added.','bad'); return; }
+  btn.disabled=true;
+  const jobs=[['w','1W',1000,'weekly'],['m','M',200,'monthly'],['d','1D',400,'daily'],['h4','4h',300,'4-hour']], bars={};
+  try{
+    for(let i=0;i<jobs.length;i++){
+      const [k,iv,cnt,lab]=jobs[i]; setStatus(`Pulling ${cfg.pair} ${lab} candles (${i+1}/${jobs.length})…`);
+      try{ bars[k]=await tvBars(cfg.tv,iv,cnt); }
+      catch(e){
+        if(e&&e.code==='server_unavailable'&&e.retryable){ await sleep(3000); bars[k]=await tvBars(cfg.tv,iv,cnt); }
+        else throw e;
+      }
+      if(i<jobs.length-1) await sleep(1500);
+    }
+    const snap=buildSnapshot(bars,cfg);
+    applySnapshot(snap,key); if(key===AK){ boot(); showAsOf(); }
+    let saved='';
+    try{ if(!DB) DB=await claude.use('db'); if(DB){ await DB.doc('snap/'+cfg.doc).set(snap); saved=' Saved for everyone who opens this page.'; } else saved=' Not saved: sign in to keep it.'; }
+    catch(e){ saved=' Not saved: only editors of this page can save a refresh.'; }
+    setStatus(`Updated ${new Date().toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}. ${cfg.sym} ${fmtUSD(snap.price)}.${saved}`,'good');
+  }catch(e){
+    const msg = (e&&TV_MSG[e.code]) || (/quota|suspend|suspicion|too many|rate/i.test(String(e&&e.message))||(e&&e.code==='rate_limited') ? 'TradingView paused requests (usage limit). Try again later; the page keeps its last data.' : (e&&e.message) || 'Could not reach TradingView. Try again in a minute.');
+    setStatus(msg,'bad');
+  }finally{ btn.disabled=false; }
+}
+const fmtUSD=v=>'$'+Math.round(v).toLocaleString('en-US');
+
+document.getElementById('refreshBtn').onclick=refreshFromTV;
+showAsOf();
+// open with the last saved refresh if it is newer than the built-in snapshot
+(async()=>{
+  try{
+    DB=await claude.use('db'); if(!DB) return;
+    let cur=false;
+    for(const [k,cfg] of Object.entries(ASSETS)){
+      const doc=await DB.doc('snap/'+cfg.doc).get();
+      if(doc.exists){ const s=doc.data(); if(s && s.at>cfg.data.at){ applySnapshot(s,k); if(k===AK) cur=true; } }
+    }
+    if(cur){ boot(); showAsOf(); setStatus('Showing the last saved refresh.',''); }
+  }catch(e){}
+})();
+function defaultStatus(){ return `Manual refresh: pulls the latest ${A.pair} weekly, monthly, daily and 4H candles (4 requests) and recalculates the whole page.`; }
+function switchAsset(k){
+  if(!ASSETS[k]||k===AK) return;
+  loadAsset(k); try{ localStorage.setItem('cycleAsset',k); }catch(e){}
+  boot(); showAsOf(); setStatus(defaultStatus(),'');
+}
+document.getElementById('segAsset').onclick=e=>{ const b=e.target.closest('button'); if(!b) return; if(location.hash!=='#'+b.dataset.k){ location.hash=b.dataset.k; } switchAsset(b.dataset.k); };
+window.onhashchange=()=>{ const k=(location.hash||'').slice(1).toLowerCase(); if(ASSETS[k]) switchAsset(k); };
+setStatus(defaultStatus(),'');
+
+
+</script>
+<script src="cloud.js"></script>
