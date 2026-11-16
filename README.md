@@ -1,4 +1,4 @@
-# Cycle Map (BTC & ETH 2026–2029)
+# Cycle Map (BTC, ETH, SOL, BNB, XRP · 2026–2029)
 
 The Claude artifact "BTC & ETH 2026–2029 Cycle Map", rebuilt on GitHub and shown on Cloudflare.
 Claude only loads data; it does not run the dashboard's logic. Spot only.
@@ -23,4 +23,15 @@ Tests (need `npm i jsdom@24` in some folder):
 - Render, the Cloudflare page for BTC and ETH: `node tests/render.js <node_modules dir>`.
 - Real-data check done once on 16 Nov 2026: the candles written inside the original page (TradingView, pulled 28 Oct and 7 Nov 2026) against the same periods made here from market-data: 480 BTC weeks, 110 BTC months, 481 ETH weeks and 280 BTC days, all identical.
 
-Not included yet: SOL, BNB, XRP. Their Binance candles are already in market-data, but the original page has no cycle dates for them; adding them is a separate step (fixed edits on top of the original page).
+## SOL, BNB, XRP (added 16 Nov 2026)
+- **Page**: the original stays byte-identical in `reference/`. `tools/page.js` holds a fixed list of edits that add the three coins to the coin switch, with their cycle tops and lows, replays and wording. Every edit must match the original exactly once, or the build stops. For BTC and ETH the edits change nothing, and parity still runs them on the untouched original.
+- **Cycle dates** come from the Binance candles; XRP's Jan 2018 top and earlier come from the stored Bitstamp history.
+  - SOL: one replay (2022–25).
+  - BNB and XRP: two replays (2022–25, 2018–21).
+- **Data**:
+  - Binance SOLUSDT, BNBUSDT and XRPUSDT 1D and 4H (laptop upload).
+  - XRP only: `tv/BITSTAMP_XRPUSD/1D`, Bitstamp daily Aug 2013 to May 2018, loaded once from TradingView and marked frozen in market-data. It is used only for days before Binance XRPUSDT starts.
+  - One empty week in it (26 Dec 2016) repeats the previous close.
+- **Shrink rate between cycles**: SOL has too few cycles to measure one, and XRP's 2021 top was lower than its 2018 top. In both cases the last step is repeated unchanged, and the page says so. BTC and ETH are not affected.
+- **Built-in snapshot**: `reference/builtin_alts.json` is made once with `node build/build.js <market-data> --builtin`, as the original page carries one for BTC and ETH.
+- **Parity**, 16 Nov 2026: all five saved documents are identical to the page's own Refresh on the same data (SOL 328, BNB 472, XRP 695 weeks).

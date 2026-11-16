@@ -5,6 +5,9 @@
    stored closed candles, prepared by this file's own code (not build.js): days (plus today so far from closed 4H
    candles when config says so), weeks and months made from those days, and the 4H candles. The page then runs its
    whole Refresh for BTC and for ETH and saves snap/cycle and snap/cycle_eth; both are compared with build.js output.
+   Two rounds: BTC and ETH on the ORIGINAL page, untouched; then SOL, BNB and XRP on the page with the tools/page.js
+   edits (the original cannot refresh coins it does not know). The mock gives XRP the stored Bitstamp days before
+   Binance's first day, and repeats the previous close for a week with no candles, as config/dashboard.json says.
    Not compared (on purpose): "at" (the page uses the clock at refresh time, build.js the close of the newest candle)
    and "src" (the page writes "TradingView BINANCE:...", build.js names the real source). */
 'use strict';
@@ -18,6 +21,7 @@ const load = (id) => fs.readFileSync(path.join(MD, 'data', id.split('/')[0], id.
 const fold = (rows, key) => { const m = new Map(); for (const r of rows) { const k = key(r.t), b = m.get(k);
   if (!b) m.set(k, { t: k, o: r.o, h: r.h, l: r.l, c: r.c }); else { if (r.h > b.h) b.h = r.h; if (r.l < b.l) b.l = r.l; b.c = r.c; } } return [...m.values()]; };
 const day = (t) => t - (t % 86400);
+const fill = (w) => { const o = []; for (const b of w) { while (o.length && b.t - o[o.length - 1].t > 604800) { const q = o[o.length - 1]; o.push({ t: q.t + 604800, o: q.c, h: q.c, l: q.c, c: q.c }); } o.push(b); } return o; };
 const week = (t) => { const d = new Date(day(t) * 1000); return day(t) - ((d.getUTCDay() || 7) - 1) * 86400; };
 const month = (t) => Date.parse(new Date(t * 1000).toISOString().slice(0, 7) + '-01T00:00:00Z') / 1000;
 const answer = (bars, n) => { const b = bars.slice(-n); return { success: true, format: 'columns', bars: { t: b.map((x) => x.t), o: b.map((x) => x.o), h: b.map((x) => x.h), l: b.map((x) => x.l), c: b.map((x) => x.c) } }; };
@@ -25,17 +29,20 @@ const BY_TV = Object.fromEntries(Object.values(cfg.assets).map((a) => [a.tv, a])
 function tv(a) {
   const A = BY_TV[a.symbol]; if (!A) throw { code: 'tool_error', message: 'no fixture for ' + a.symbol };
   const h4 = load(A.h4); let d = load(A.daily);
+  if (A.seed) d = load(A.seed).filter((r) => r.t < d[0].t).concat(d);
   if (cfg.today_from_4h) { const from = d[d.length - 1].t + 86400; d = d.concat(fold(h4.filter((r) => r.t >= from), day)); }
   if (a.interval === '4h') return answer(h4, a.count);
   if (a.interval === '1D') return answer(d, a.count);
-  if (a.interval === '1W') return answer(fold(d, week), a.count);
+  if (a.interval === '1W') return answer(fill(fold(d, week)), a.count);
   if (a.interval === 'M') return answer(fold(d, month), a.count);
   throw { code: 'tool_error', message: 'no fixture for ' + a.symbol + ' ' + a.interval };
 }
-(async () => {
-  const store = {}, calls = [];
-  const html = fs.readFileSync(path.join(ROOT, 'reference/artifact_wrapper.html'), 'utf8') + fs.readFileSync(path.join(ROOT, 'reference/index.original.html'), 'utf8').replace(/<link[^>]+>/g, '');
-  const errors = [], vc = new VirtualConsole(); vc.on('error', (...a) => errors.push(a.map(String).join(' '))); vc.on('jsdomError', (e) => errors.push('jsdom: ' + e.message));
+const store = {}, calls = [], status = {}, errors = [];
+const ORIGINAL = fs.readFileSync(path.join(ROOT, 'reference/index.original.html'), 'utf8');
+const EDITED = require('../tools/page.js').edit(ORIGINAL, JSON.parse(fs.readFileSync(path.join(ROOT, 'reference/builtin_alts.json'), 'utf8')));
+async function round(page, keys) {
+  const html = fs.readFileSync(path.join(ROOT, 'reference/artifact_wrapper.html'), 'utf8') + page.replace(/<link[^>]+>/g, '');
+  const vc = new VirtualConsole(); vc.on('error', (...a) => errors.push(a.map(String).join(' '))); vc.on('jsdomError', (e) => errors.push('jsdom: ' + e.message));
   const dom = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc, url: 'https://example.test/', beforeParse(w) {
     const snap = (p) => ({ id: p.split('/').pop(), exists: p in store, data: () => JSON.parse(JSON.stringify(store[p])), metadata: {} });
     const DB = { doc: (p) => ({ get: async () => snap(p), set: async (o) => { store[p] = JSON.parse(JSON.stringify(o)); } }) };
@@ -43,8 +50,7 @@ function tv(a) {
     w.claude = { use: async (k) => (k === 'db' ? DB : k === 'mcp' ? MCP : null) };
   } });
   const w = dom.window, d = w.document, sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  const status = {};
-  for (const key of Object.keys(cfg.assets)) {
+  for (const key of keys) {
     await sleep(300);
     d.querySelector(`#segAsset button[data-k="${key}"]`).click();
     await sleep(300);
@@ -54,6 +60,11 @@ function tv(a) {
     status[key] = el.textContent;
     if (!/\bgood\b/.test(el.className)) throw new Error('the page could not refresh ' + key + ': ' + el.textContent);
   }
+  w.close();
+}
+(async () => {
+  await round(ORIGINAL, Object.keys(cfg.assets).filter((k) => !cfg.assets[k].builtin));
+  await round(EDITED, Object.keys(cfg.assets).filter((k) => cfg.assets[k].builtin));
   // build.js on the same data
   const tmp = fs.mkdtempSync('/tmp/cyclemap-parity-'); execFileSync('cp', ['-r', ROOT + '/.', tmp]);
   for (const f of ['public/snapshot.json', 'public/freshness.json']) try { fs.unlinkSync(path.join(tmp, f)); } catch (e) { /* none */ }
@@ -72,5 +83,5 @@ function tv(a) {
   res.page_errors = errors;
   const ok = res.identical.length === Object.keys(cfg.assets).length && !Object.keys(res.different).length && !res.only_page.length && !res.only_build.length && !errors.length && calls.length === 4 * Object.keys(cfg.assets).length;
   console.log(JSON.stringify({ ok, ...res }, null, 1));
-  w.close(); process.exit(ok ? 0 : 1);
+  process.exit(ok ? 0 : 1);
 })().catch((e) => { console.error(e); process.exit(2); });

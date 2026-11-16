@@ -27,6 +27,7 @@
   function showFresh(F) {
     var now = Date.now() / 1000;
     var rows = F.series.map(function (s) {
+      if (s.history_only) return { label: esc(s.symbol + ' ' + s.tf) + ' <span style="opacity:.75">(' + esc(s.source) + ')</span>', when: t2s(s.last_close), st: 'stored history (frozen)', flag: false };
       var behind = s.last_close ? Math.max(0, Math.floor((now - s.last_close) / s.period_s)) : null;
       var stt = behind === null ? 'no data yet' : behind === 0 ? 'current' : behind + ' candle' + (behind > 1 ? 's' : '') + ' behind';
       return { label: esc(s.symbol + ' ' + s.tf) + ' <span style="opacity:.75">(' + esc(s.source) + ')</span>', when: t2s(s.last_close), st: stt, flag: behind === null || behind > 1 };
@@ -42,7 +43,7 @@
     strip.innerHTML = '<details><summary>' + head + '</summary>' +
       (kept ? '<p>These show their last good version:</p><ul style="margin:4px 0 0">' + kept + '</ul>' : '') +
       '<table><thead><tr><th>Input</th><th>Last closed candle (your time)</th><th>Status</th></tr></thead><tbody>' + body + '</tbody></table>' +
-      '<p>' + esc(F.last_result || '') + ' Only closed candles are used: the price is the last closed 4H candle, and this week and month run to that same candle. Candles are Binance BTCUSDT and ETHUSDT from your laptop upload; weekly and monthly bars are made from the daily candles. History before Aug 2017 is the fixed history inside the page.</p></details>';
+      '<p>' + esc(F.last_result || '') + ' Only closed candles are used: the price is the last closed 4H candle, and this week and month run to that same candle. Candles are Binance BTCUSDT, ETHUSDT, SOLUSDT, BNBUSDT and XRPUSDT from your laptop upload; weekly and monthly bars are made from the daily candles. BTC and ETH history before Aug 2017 is the fixed history inside the page; XRP before May 2018 is stored Bitstamp history, loaded once.</p></details>';
   }
   function loadFresh() {
     return fetch('freshness.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (F) { if (F) showFresh(F); }).catch(function () {});
