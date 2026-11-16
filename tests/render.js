@@ -1,5 +1,5 @@
 /* Render check: public/index.html (the original page + shim.js + cloud.js) opened with the built public/snapshot.json,
-   once for BTC and once for ETH. Fails on any page error, if the saved snapshot was not picked up, or if a section is empty.
+   once for each coin (BTC, ETH, SOL, BNB, XRP). Fails on any page error, if the saved snapshot was not picked up, or if a section is empty.
    usage: node tests/render.js <node_modules dir that has jsdom> */
 'use strict';
 const fs = require('fs'), path = require('path');
@@ -16,7 +16,11 @@ async function view(asset, doc, owner) {
   const dom = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc, url: 'https://dashboards.example/cyclemap/#' + asset, beforeParse(w) {
     w.fetch = async (u) => { const f = String(u);
       if (f.includes('/api/')) return owner ? { ok: true, status: 200, json: async () => ({ status: 'completed', conclusion: 'success' }) } : { ok: false, status: 302, json: async () => ({}) };
-      const b = fs.readFileSync(path.join(PUB, f.replace(/^.*\//, '').split('?')[0]), 'utf8'); return { ok: true, status: 200, json: async () => JSON.parse(b) }; };
+      const b = fs.readFileSync(path.join(PUB, f.replace(/^.*\//, '').split('?')[0]), 'utf8'), j = JSON.parse(b);
+      // The page uses a saved snapshot only if it is newer than its built-in one. On the day a coin is added both come
+      // from the same candle, so the snapshot is moved 4 hours later here to check the page really switches to it.
+      if (j.docs) for (const d of Object.values(j.docs)) d.at += 4 * 3600e3;
+      return { ok: true, status: 200, json: async () => j }; };
     Object.defineProperty(w.HTMLElement.prototype, 'clientWidth', { get() { return 900; } });
   } });
   const w = dom.window, d = w.document, sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -24,7 +28,8 @@ async function view(asset, doc, owner) {
   const t = (s) => { const e = d.querySelector(s); return e ? e.textContent.trim().replace(/\s+/g, ' ') : ''; };
   const n = (s) => d.querySelectorAll(s).length;
   const s = SNAP['snap/' + doc], price = '$' + (s.price >= 10 ? Math.round(s.price).toLocaleString('en-US') : s.price.toFixed(2));
-  const v = { asset, owner, asof: t('#asof'), h1: t('#h1'), strip_price: t('#strip .stat .v'), want_price: price, status_line: t('#refreshStatus'),
+  const replays = { btc: 3, eth: 2, sol: 1, bnb: 2, xrp: 2 }[asset];
+  const v = { asset, owner, replays, buttons: n('#segAsset button'), pressed: t('#segAsset button[aria-pressed="true"]'), bad_text: (d.querySelector('.wrap').textContent.match(/.{0,30}(?:wk null|\$NaN|null wk).{0,30}/) || [''])[0], asof: t('#asof'), h1: t('#h1'), strip_price: t('#strip .stat .v'), want_price: price, status_line: t('#refreshStatus'),
     stats: n('#strip .stat'), outlook: n('#outlook tbody tr'), match: n('#matchTable tbody tr'), sma: n('#smaTable tbody tr'), scen: n('#scenTable tbody tr'), clocks: n('#clocks .clock'),
     roadmap: n('#roadmap tbody tr'), cycles: n('#cycles tbody tr'), years: n('#years tbody tr'), quarters: n('#quarters tbody tr'), tf: n('#tf .tfc'), checks: n('#checks li'),
     chart_paths: n('#chart path'), track_paths: n('#track path'), sma_paths: n('#smaChart path'), week: t('#weekCheck').slice(0, 90),
@@ -34,10 +39,11 @@ async function view(asset, doc, owner) {
   w.close(); return v;
 }
 (async () => {
-  const out = [await view('btc', 'cycle', false), await view('eth', 'cycle_eth', false), await view('btc', 'cycle', true)];
+  const out = [await view('btc', 'cycle', false), await view('eth', 'cycle_eth', false), await view('sol', 'cycle_sol', false), await view('bnb', 'cycle_bnb', false), await view('xrp', 'cycle_xrp', false), await view('btc', 'cycle', true)];
   const bad = out.filter((v) => v.errors.length || v.nan || !/Binance closed candles/.test(v.asof) || v.strip_price !== v.want_price || !/Showing the last saved refresh/.test(v.status_line)
-    || v.stats !== 6 || v.outlook < 8 || v.match < 3 || v.sma < 9 || v.scen < 3 || v.clocks !== 4 || v.roadmap < 8 || v.cycles < 4 || v.years !== 4 || v.quarters !== 4 || v.tf !== 3 || v.checks !== 6
-    || v.chart_paths < 3 || v.track_paths < 2 || v.sma_paths < 2 || !v.own_refresh_hidden || v.cloud_refresh_hidden !== !v.owner || !/all current|behind/.test(v.fresh) || !v.back || !v.hidden_css || !v.utf8);
+    || v.buttons !== 5 || v.pressed.toLowerCase() !== v.asset || v.bad_text
+    || v.stats !== 6 || v.outlook < 8 || v.match !== v.replays + 1 || v.sma < 9 || v.scen !== v.replays + 1 || v.clocks !== 4 || v.roadmap < 8 || v.cycles < 3 || v.years !== 4 || v.quarters !== 4 || v.tf !== 3 || v.checks !== 6
+    || v.chart_paths < v.replays + 2 || v.track_paths < 2 || v.sma_paths < 2 || !v.own_refresh_hidden || v.cloud_refresh_hidden !== !v.owner || !/all current|behind/.test(v.fresh) || !v.back || !v.hidden_css || !v.utf8);
   console.log(JSON.stringify(out, null, 1));
   console.log(bad.length ? 'RENDER FAILED: ' + bad.map((v) => v.asset).join(', ') : 'RENDER OK');
   process.exit(bad.length ? 1 : 0);

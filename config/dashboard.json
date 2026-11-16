@@ -1,10 +1,68 @@
 {
- "_about": "Which shared data (mbzazad-max/market-data) feeds each saved-snapshot document of the original Cycle Map page. The page's own Refresh asks TradingView for BINANCE:<pair> weekly x1000, monthly x200, daily x400 and 4H x300 per coin and saves one document per coin (snap/cycle, snap/cycle_eth). Here the same four answers are made from the Binance closed candles already in market-data: daily = closed days; weekly and monthly = made from those days (Monday weeks, calendar months, UTC); 4H = closed 4H candles. today_from_4h: the current UTC day is added from the 4H candles that have already closed, so the newest week, month, day and price all end at the same last closed 4H candle (as a TradingView answer taken at that moment would). Set it to false to stop at the last closed day. doc, tv, dp and baseATH are the page's own values for each coin (tools/check_page.js checks they are still in the page). Pre-2017 weekly history (Bitstamp, Kraken) is written inside the page and is not data here.",
+ "_about": "Which shared data (mbzazad-max/market-data) feeds each saved-snapshot document of the original Cycle Map page. The page's own Refresh asks TradingView for BINANCE:<pair> weekly x1000, monthly x200, daily x400 and 4H x300 per coin and saves one document per coin (snap/cycle, snap/cycle_eth). Here the same four answers are made from the Binance closed candles already in market-data: daily = closed days; weekly and monthly = made from those days (Monday weeks, calendar months, UTC); 4H = closed 4H candles. today_from_4h: the current UTC day is added from the 4H candles that have already closed, so the newest week, month, day and price all end at the same last closed 4H candle (as a TradingView answer taken at that moment would). Set it to false to stop at the last closed day. doc, tv, dp and baseATH are the page's own values for each coin (tools/check_page.js checks they are still in the page). Pre-2017 weekly history (Bitstamp, Kraken) is written inside the page and is not data here. SOL, BNB and XRP (added 16 Nov 2026): Binance SOLUSDT, BNBUSDT and XRPUSDT 1D and 4H from market-data, same rules. They are added to the page by the fixed edits in tools/page.js; wk0 is the first week of each coin's weekly history, and their starting all-time high comes from reference/builtin_alts.json. XRP only: 'seed' is the stored Bitstamp XRPUSD daily history (TradingView, loaded once, frozen), used for the days before Binance XRPUSDT starts; from Binance's first day on, only Binance is used. A week with no candles at all (one in the XRP seed, 26 Dec 2016) repeats the previous close so the weekly history has no holes.",
  "today_from_4h": true,
- "counts": { "w": 1000, "m": 200, "d": 400, "h4": 300 },
+ "counts": {
+  "w": 1000,
+  "m": 200,
+  "d": 400,
+  "h4": 300
+ },
  "src": "Binance closed candles",
  "assets": {
-  "btc": { "doc": "cycle", "pair": "BTCUSDT", "tv": "BINANCE:BTCUSDT", "dp": 0, "baseATH": { "d": "2025-10-06", "p": 126200 }, "daily": "binance/BTCUSDT/1D", "h4": "binance/BTCUSDT/4H" },
-  "eth": { "doc": "cycle_eth", "pair": "ETHUSDT", "tv": "BINANCE:ETHUSDT", "dp": 2, "baseATH": { "d": "2025-08-24", "p": 4956.78 }, "daily": "binance/ETHUSDT/1D", "h4": "binance/ETHUSDT/4H" }
+  "btc": {
+   "doc": "cycle",
+   "pair": "BTCUSDT",
+   "tv": "BINANCE:BTCUSDT",
+   "dp": 0,
+   "baseATH": {
+    "d": "2025-10-06",
+    "p": 126200
+   },
+   "daily": "binance/BTCUSDT/1D",
+   "h4": "binance/BTCUSDT/4H"
+  },
+  "eth": {
+   "doc": "cycle_eth",
+   "pair": "ETHUSDT",
+   "tv": "BINANCE:ETHUSDT",
+   "dp": 2,
+   "baseATH": {
+    "d": "2025-08-24",
+    "p": 4956.78
+   },
+   "daily": "binance/ETHUSDT/1D",
+   "h4": "binance/ETHUSDT/4H"
+  },
+  "sol": {
+   "doc": "cycle_sol",
+   "pair": "SOLUSDT",
+   "tv": "BINANCE:SOLUSDT",
+   "dp": 2,
+   "wk0": "2020-08-10",
+   "daily": "binance/SOLUSDT/1D",
+   "h4": "binance/SOLUSDT/4H",
+   "builtin": true
+  },
+  "bnb": {
+   "doc": "cycle_bnb",
+   "pair": "BNBUSDT",
+   "tv": "BINANCE:BNBUSDT",
+   "dp": 2,
+   "wk0": "2017-11-06",
+   "daily": "binance/BNBUSDT/1D",
+   "h4": "binance/BNBUSDT/4H",
+   "builtin": true
+  },
+  "xrp": {
+   "doc": "cycle_xrp",
+   "pair": "XRPUSDT",
+   "tv": "BINANCE:XRPUSDT",
+   "dp": 6,
+   "wk0": "2013-07-29",
+   "seed": "tv/BITSTAMP_XRPUSD/1D",
+   "daily": "binance/XRPUSDT/1D",
+   "h4": "binance/XRPUSDT/4H",
+   "builtin": true
+  }
  }
 }

@@ -1,8 +1,8 @@
-/* The page must be the original "BTC & ETH 2026–2029 Cycle Map" artifact, unchanged.
+/* The page must be the original "BTC & ETH 2026–2029 Cycle Map" artifact, with only the fixed edits in tools/page.js (SOL, BNB, XRP, 16 Nov 2026).
    1. reference/index.original.html must match reference/PAGE_SHA256SUMS (the published artifact page, read 16 Nov 2026).
    2. public/index.html must be exactly: reference/artifact_wrapper.html (the head that claude.ai's artifact host puts
-      around every page: UTF-8, mobile viewport, "hidden" really hides) + that file + the two added script tags
-      (shim.js before the page's script, cloud.js at the end). There are no other edits.
+      around every page: UTF-8, mobile viewport, "hidden" really hides) + that file with the tools/page.js edits + the
+      two added script tags (shim.js before the page's script, cloud.js at the end).
    3. The page's own values copied into config/dashboard.json (document name, decimals, starting all-time high per coin)
       must still be in the page.
    usage: node tools/check_page.js [--write]   (exit 1 on any difference; --write rebuilds public/index.html) */
@@ -16,10 +16,13 @@ if (got !== want) { console.error('reference/index.original.html changed: ' + go
 const text = ref.toString('utf8'), SCRIPT = '\n<script>\n';
 if (text.split(SCRIPT).length !== 2) { console.error('the page should have exactly one script block'); process.exit(1); }
 const WRAP = fs.readFileSync(path.join(ROOT, 'reference/artifact_wrapper.html'), 'utf8');
-const expected = WRAP + text.replace(SCRIPT, () => '\n<script src="shim.js"></script>' + SCRIPT) + '<script src="cloud.js"></script>\n';
+const builtin = JSON.parse(fs.readFileSync(path.join(ROOT, 'reference/builtin_alts.json'), 'utf8'));
+const expected = WRAP + require('./page.js').edit(text, builtin).replace(SCRIPT, () => '\n<script src="shim.js"></script>' + SCRIPT) + '<script src="cloud.js"></script>\n';
 if (process.argv.includes('--write')) { fs.writeFileSync(path.join(ROOT, 'public/index.html'), expected); console.log('public/index.html written'); process.exit(0); }
-if (fs.readFileSync(path.join(ROOT, 'public/index.html'), 'utf8') !== expected) { console.error('public/index.html is not the original page plus shim.js and cloud.js'); process.exit(1); }
+if (fs.readFileSync(path.join(ROOT, 'public/index.html'), 'utf8') !== expected) { console.error('public/index.html is not the original page plus the tools/page.js edits, shim.js and cloud.js'); process.exit(1); }
 const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'config/dashboard.json'), 'utf8')).assets;
+const served = expected;
+for (const [k, a] of Object.entries(cfg)) if (a.builtin && served.split(`pair:'${a.pair}', tv:'${a.tv}', doc:'${a.doc}', dp:${a.dp},`).length !== 2 | served.split(`W0:'${a.wk0}', wk0:'${a.wk0}',`).length !== 2) { console.error('config/dashboard.json does not match tools/page.js for ' + k); process.exit(1); }
 const must = [
   `pair:'${cfg.btc.pair}', tv:'${cfg.btc.tv}', doc:'${cfg.btc.doc}', dp:${cfg.btc.dp},`,
   `pair:'${cfg.eth.pair}', tv:'${cfg.eth.tv}', doc:'${cfg.eth.doc}', dp:${cfg.eth.dp},`,
@@ -29,4 +32,4 @@ const must = [
 ];
 const lost = must.filter((m) => text.split(m).length !== 2);
 if (lost.length) { console.error('config/dashboard.json no longer matches the page:\n' + lost.join('\n')); process.exit(1); }
-console.log('Page = original artifact + shim.js + cloud.js: ' + got);
+console.log('Page = original artifact + tools/page.js edits (SOL, BNB, XRP) + shim.js + cloud.js: ' + got);
