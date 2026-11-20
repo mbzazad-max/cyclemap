@@ -14,7 +14,7 @@ on:
     - cron: '20 1 * * *'   # once a day as a safety net (12:20 Sydney summer time), after the 11:30 and 11:40 loads; data commits trigger it too
   push:
     branches: [main]
-    paths: ['.github/workflows/build.yml', 'public/index.html', 'public/shim.js', 'public/cloud.js', 'worker/**', 'build/**', 'config/**', 'tools/**', 'wrangler.jsonc', 'reference/**']
+    paths: ['.github/workflows/build.yml', 'public/index.html', 'public/shim.js', 'public/cloud.js', 'public/extras.js', 'worker/**', 'build/**', 'config/**', 'tools/**', 'wrangler.jsonc', 'reference/**']
 permissions:
   contents: write
 concurrency:
@@ -47,11 +47,13 @@ jobs:
           fetch-depth: 1
       - name: Build the snapshot from closed candles (keeps last good data on any failure)
         run: node build/build.js md ${{ inputs.force && '--force' || '' }}
+      - name: Cycle extras (phase marker, month-by-cycle-year table, BTC dashboard read; keeps last good on failure)
+        run: node build/extras.js md || echo "::warning::Cycle extras not rebuilt; the page keeps the last extras.json."
       - name: Save the new snapshot (one commit)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/snapshot.json public/freshness.json
+          git add public/snapshot.json public/freshness.json public/extras.json
           if git diff --cached --quiet; then echo "Nothing changed."; exit 0; fi
           git commit -q -m "Dashboard build $(node -p "require('./public/freshness.json').generated")"
           for i in 1 2 3 4 5; do git push -q origin HEAD:main && exit 0; git pull -q --rebase origin main; sleep $((i*2)); done

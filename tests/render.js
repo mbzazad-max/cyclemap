@@ -1,4 +1,4 @@
-/* Render check: public/index.html (the original page + shim.js + cloud.js) opened with the built public/snapshot.json,
+/* Render check: public/index.html (the original page + shim.js + cloud.js + extras.js) opened with the built public/snapshot.json,
    once for each coin (BTC, ETH, SOL, BNB, XRP). Fails on any page error, if the saved snapshot was not picked up, or if a section is empty.
    usage: node tests/render.js <node_modules dir that has jsdom> */
 'use strict';
@@ -11,6 +11,7 @@ async function view(asset, doc, owner) {
   const html = fs.readFileSync(path.join(PUB, 'index.html'), 'utf8')
     .replace('<script src="shim.js"></script>', () => '<script>' + fs.readFileSync(path.join(PUB, 'shim.js'), 'utf8') + '</script>')
     .replace('<script src="cloud.js"></script>', () => '<script>' + fs.readFileSync(path.join(PUB, 'cloud.js'), 'utf8') + '</script>')
+    .replace('<script src="extras.js"></script>', () => '<script>' + fs.readFileSync(path.join(PUB, 'extras.js'), 'utf8') + '</script>')
     .replace(/<link[^>]+>/g, '');
   const errors = [], vc = new VirtualConsole(); vc.on('error', (...a) => errors.push(a.map(String).join(' '))); vc.on('jsdomError', (e) => errors.push('jsdom: ' + e.message));
   const dom = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc, url: 'https://dashboards.example/cyclemap/#' + asset, beforeParse(w) {
@@ -34,7 +35,9 @@ async function view(asset, doc, owner) {
     roadmap: n('#roadmap tbody tr'), cycles: n('#cycles tbody tr'), years: n('#years tbody tr'), quarters: n('#quarters tbody tr'), tf: n('#tf .tfc'), checks: n('#checks li'),
     chart_paths: n('#chart path'), track_paths: n('#track path'), sma_paths: n('#smaChart path'), week: t('#weekCheck').slice(0, 90),
     own_refresh_hidden: /#refreshBtn,#refreshStatus\{display:none!important\}/.test(d.head.innerHTML), cloud_refresh_hidden: d.getElementById('ghRefresh').hidden,
-    fresh: t('#fresh summary'), back: !!d.querySelector('a.dash-back[href="/"]'), nan: /NaN|undefined|Infinity/.test(d.querySelector('.wrap').textContent),
+    fresh: t('#fresh summary'),
+    x_phase: n('#cxPhase .stat'), x_bar: n('#cxPhase .cx-bar > div.on'), x_heat: n('#cxHeat tbody tr'), x_now: n('#cxHeat td.now'), x_tp: n('#cxTP tbody tr'), x_link: !!d.querySelector('#cxTP a.cx-go[href="/btc-eth/#plan"]'), x_read: t('#cxPhase .cx-read').slice(0, 120), x_agree: t('#cxTP .cx-agree').slice(0, 120),
+    x_order: !!(d.getElementById('cxPhase') && d.getElementById('cxPhase').previousElementSibling && d.getElementById('cxPhase').previousElementSibling.id === 'strip'), back: !!d.querySelector('a.dash-back[href="/"]'), nan: /NaN|undefined|Infinity/.test(d.querySelector('.wrap').textContent),
     hidden_css: /\[hidden\]:not\(\[hidden=until-found i\]\)\{display:none!important\}/.test(d.head.innerHTML), utf8: d.characterSet === 'UTF-8' && t('title').indexOf('–') > 0, errors };
   w.close(); return v;
 }
@@ -43,7 +46,8 @@ async function view(asset, doc, owner) {
   const bad = out.filter((v) => v.errors.length || v.nan || !/Binance closed candles/.test(v.asof) || v.strip_price !== v.want_price || !/Showing the last saved refresh/.test(v.status_line)
     || v.buttons !== 5 || v.pressed.toLowerCase() !== v.asset || v.bad_text
     || v.stats !== 6 || v.outlook < 8 || v.match !== v.replays + 1 || v.sma < 9 || v.scen !== v.replays + 1 || v.clocks !== 4 || v.roadmap < 8 || v.cycles < 3 || v.years !== 4 || v.quarters !== 4 || v.tf !== 3 || v.checks !== 6
-    || v.chart_paths < v.replays + 2 || v.track_paths < 2 || v.sma_paths < 2 || !v.own_refresh_hidden || v.cloud_refresh_hidden !== !v.owner || !/all current|behind/.test(v.fresh) || !v.back || !v.hidden_css || !v.utf8);
+    || v.chart_paths < v.replays + 2 || v.track_paths < 2 || v.sma_paths < 2 || !v.own_refresh_hidden || v.cloud_refresh_hidden !== !v.owner || !/all current|behind/.test(v.fresh) || !v.back || !v.hidden_css || !v.utf8
+    || v.x_phase !== 6 || v.x_bar !== 1 || v.x_heat < 10 || v.x_now !== 1 || v.x_tp !== 3 || v.x_link !== (v.asset !== 'xrp') || !v.x_order || !v.x_agree);
   console.log(JSON.stringify(out, null, 1));
   console.log(bad.length ? 'RENDER FAILED: ' + bad.map((v) => v.asset).join(', ') : 'RENDER OK');
   process.exit(bad.length ? 1 : 0);

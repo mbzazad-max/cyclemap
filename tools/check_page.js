@@ -17,7 +17,7 @@ const text = ref.toString('utf8'), SCRIPT = '\n<script>\n';
 if (text.split(SCRIPT).length !== 2) { console.error('the page should have exactly one script block'); process.exit(1); }
 const WRAP = fs.readFileSync(path.join(ROOT, 'reference/artifact_wrapper.html'), 'utf8');
 const builtin = JSON.parse(fs.readFileSync(path.join(ROOT, 'reference/builtin_alts.json'), 'utf8'));
-const expected = WRAP + require('./page.js').edit(text, builtin).replace(SCRIPT, () => '\n<script src="shim.js"></script>' + SCRIPT) + '<script src="cloud.js"></script>\n';
+const expected = WRAP + require('./page.js').edit(text, builtin).replace(SCRIPT, () => '\n<script src="shim.js"></script>' + SCRIPT) + '<script src="cloud.js"></script>\n<script src="extras.js"></script>\n';
 if (process.argv.includes('--write')) { fs.writeFileSync(path.join(ROOT, 'public/index.html'), expected); console.log('public/index.html written'); process.exit(0); }
 if (fs.readFileSync(path.join(ROOT, 'public/index.html'), 'utf8') !== expected) { console.error('public/index.html is not the original page plus the tools/page.js edits, shim.js and cloud.js'); process.exit(1); }
 const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'config/dashboard.json'), 'utf8')).assets;
@@ -32,4 +32,4 @@ const must = [
 ];
 const lost = must.filter((m) => text.split(m).length !== 2);
 if (lost.length) { console.error('config/dashboard.json no longer matches the page:\n' + lost.join('\n')); process.exit(1); }
-console.log('Page = original artifact + tools/page.js edits (SOL, BNB, XRP) + shim.js + cloud.js: ' + got);
+console.log('Page = original artifact + tools/page.js edits (SOL, BNB, XRP) + shim.js + cloud.js + extras.js: ' + got);
